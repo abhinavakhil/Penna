@@ -1,0 +1,19 @@
+{
+  "name": "penna-monorepo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm -r --filter \"./packages/**\" build",
+    "test": "vitest run",
+    "typecheck": "pnpm -r --filter \"./packages/**\" typecheck",
+    "dev": "pnpm --filter site dev"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "jsdom": "^26.0.0",
+    "tsup": "^8.5.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  },
+  "packageManager": "pnpm@11.23.0"
+}

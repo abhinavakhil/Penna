@@ -1,0 +1,16 @@
+{
+  "name": "site",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "pnpm --filter \"@abhinavakhil/penna-*\" build && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@abhinavakhil/penna-ai": "workspace:*",
+    "@abhinavakhil/penna-core": "workspace:*",
+    "@abhinavakhil/penna-element": "workspace:*",
+    "astro": "^5.12.0"
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "name": "@abhinavakhil/penna-element",
+  "version": "0.1.1",
+  "description": "<penna-editor> web component for @abhinavakhil/penna-core",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavakhil/Penna.git",
+    "directory": "packages\\element\\package.json"
+  },
+  "homepage": "https://github.com/abhinavakhil/Penna#readme",
+  "keywords": [
+    "editor",
+    "wysiwyg",
+    "rich-text",
+    "prosemirror",
+    "markdown"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abhinavakhil/penna-core": "workspace:*"
+  },
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

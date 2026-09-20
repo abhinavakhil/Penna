@@ -1,0 +1,167 @@
+---
+import Base from '../layouts/Base.astro'
+---
+<Base title="Playground — Penna" wide>
+  <div class="wrap wide pg">
+    <aside class="side">
+      <h1>Playground</h1>
+      <p class="muted">Everything here runs in your browser. Content autosaves locally.</p>
+
+      <h2>Options</h2>
+      <label><input type="checkbox" id="opt-readonly" /> Read-only</label>
+      <label><input type="checkbox" id="opt-toolbar" checked /> Fixed toolbar</label>
+      <label>Theme <select id="opt-theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
+      <button class="btn" id="opt-clear">Clear content</button>
+      <button class="btn" id="opt-sample">Load sample</button>
+
+      <h2>AI settings</h2>
+      <p class="muted small">Keys are stored in <b>your</b> localStorage only. Get a free key at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a>, <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> or <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a>.</p>
+      <label>Provider
+        <select id="ai-provider">
+          <option value="groq">Groq (free)</option><option value="gemini">Gemini (free)</option><option value="openrouter">OpenRouter (free models)</option><option value="together">Together (free)</option>
+          <option value="openai">OpenAI</option><option value="mistral">Mistral</option><option value="ollama">Ollama (local)</option><option value="openai-compatible">Custom OpenAI-compatible</option>
+        </select>
+      </label>
+      <label>API key <input type="password" id="ai-key" placeholder="gsk_…" autocomplete="off" /></label>
+      <label>Model <input type="text" id="ai-model" placeholder="(provider default)" /></label>
+      <label id="ai-url-row" hidden>Base URL <input type="url" id="ai-url" placeholder="https://…/v1" /></label>
+      <button class="btn primary" id="ai-save">Save & reload editor</button>
+
+      <h2>Shortcuts</h2>
+      <ul class="keys">
+        <li><kbd>/</kbd> insert block</li><li><kbd>Ctrl</kbd>+<kbd>J</kbd> ask AI</li><li><kbd>Ctrl</kbd>+<kbd>K</kbd> link</li><li><kbd>Ctrl</kbd>+<kbd>F</kbd> find & replace</li>
+        <li><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1-3</kbd> heading</li><li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>7/8/9</kbd> lists</li><li><kbd>Ctrl</kbd>+<kbd>\</kbd> clear formatting</li><li><kbd>Tab</kbd> indent / next cell</li>
+      </ul>
+    </aside>
+
+    <section class="main">
+      <div id="editor"></div>
+      <div class="out">
+        <div class="tabs" role="tablist">
+          {['Rendered', 'HTML', 'Markdown', 'JSON'].map((t, i) => <button role="tab" aria-selected={i === 0 ? 'true' : 'false'} data-tab={t.toLowerCase()}>{t}</button>)}
+          <span class="spacer"></span>
+          <button class="btn small" id="copy-out">Copy</button>
+        </div>
+        <div class="panel penna-content" id="out-rendered"></div>
+        <pre class="panel code" id="out-html" hidden></pre>
+        <pre class="panel code" id="out-markdown" hidden></pre>
+        <pre class="panel code" id="out-json" hidden></pre>
+      </div>
+    </section>
+  </div>
+
+  <style>
+    .pg { display: grid; grid-template-columns: 280px 1fr; gap: 28px; padding: 28px 20px; align-items: start; }
+    .side { position: sticky; top: 80px; display: grid; gap: 8px; font-size: 14px; }
+    .side h1 { font-size: 24px; }
+    .side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 18px; }
+    .side label { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
+    .side input[type=text], .side input[type=password], .side input[type=url], .side select { flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
+    .side .btn { justify-content: center; padding: 8px 12px; }
+    .muted { color: var(--muted); margin: 0; }
+    .small { font-size: 12px; }
+    .keys { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+    kbd { font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--card); color: var(--fg); }
+    .main { display: grid; gap: 20px; min-width: 0; }
+    .main :global(.penna) { min-height: 480px; }
+    .out { border: 1px solid var(--line); border-radius: 14px; background: var(--card); overflow: hidden; }
+    .tabs { display: flex; gap: 2px; padding: 8px; border-bottom: 1px solid var(--line); align-items: center; }
+    .tabs [role=tab] { border: 0; background: none; color: var(--muted); padding: 6px 12px; border-radius: 8px; cursor: pointer; font: inherit; font-size: 13px; font-weight: 500; }
+    .tabs [role=tab][aria-selected="true"] { background: var(--code); color: var(--fg); }
+    .spacer { flex: 1; }
+    .btn.small { padding: 5px 10px; font-size: 12px; }
+    .panel { padding: 20px; min-height: 120px; max-height: 480px; overflow: auto; margin: 0; }
+    pre.panel { border-radius: 0; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
+    @media (max-width: 900px) { .pg { grid-template-columns: 1fr; } .side { position: static; } }
+  </style>
+
+  <script>
+    import { createEditor, renderToHTML, type PennaEditor } from '@abhinavakhil/penna-core'
+    import { ai, type Provider } from '@abhinavakhil/penna-ai'
+
+    const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!
+    const SAMPLE = `<h1>Penna playground</h1><p>Type <code>/</code> for blocks, select text for the bubble menu, drop an image anywhere, or press <kbd>Ctrl</kbd>+<kbd>J</kbd> for AI.</p><h2>Things to try</h2><ul data-task=""><li data-checked="false"><p>Paste <code>https://youtu.be/dQw4w9WgXcQ</code> on an empty line</p></li><li data-checked="false"><p>Type <code>## </code> then some text</p></li><li data-checked="false"><p>Drag this block with the handle on the left</p></li><li data-checked="false"><p style="font-family: Lora; font-size: 18px; line-height: 1.75;">Change this paragraph's font, size, or line height from the toolbar</p></li></ul><table><tr><th><p>Feature</p></th><th><p>Status</p></th></tr><tr><td><p>Tables</p></td><td><p>✅</p></td></tr><tr><td><p>Merge cells</p></td><td><p>✅ (select two cells)</p></td></tr></table><div data-callout="🚀"><p>Switch the output tab below to see the same content as HTML, Markdown, JSON, or rendered without the editor.</p></div><pre data-language="ts"><code>const editor = createEditor('#editor')</code></pre>`
+
+    const aiCfg = () => ({
+      provider: (localStorage.getItem('pg-ai-provider') || 'groq') as Provider,
+      apiKey: localStorage.getItem('pg-ai-key') || undefined,
+      model: localStorage.getItem('pg-ai-model') || undefined,
+      baseUrl: localStorage.getItem('pg-ai-url') || undefined,
+    })
+    $('#ai-provider').setAttribute('value', aiCfg().provider)
+    ;($('#ai-provider') as HTMLSelectElement).value = aiCfg().provider
+    ;($('#ai-key') as HTMLInputElement).value = aiCfg().apiKey ?? ''
+    ;($('#ai-model') as HTMLInputElement).value = aiCfg().model ?? ''
+    ;($('#ai-url') as HTMLInputElement).value = aiCfg().baseUrl ?? ''
+    const syncUrlRow = () => ($('#ai-url-row').hidden = ($('#ai-provider') as HTMLSelectElement).value !== 'openai-compatible')
+    syncUrlRow()
+    $('#ai-provider').addEventListener('change', syncUrlRow)
+    $('#ai-save').addEventListener('click', () => {
+      localStorage.setItem('pg-ai-provider', ($('#ai-provider') as HTMLSelectElement).value)
+      localStorage.setItem('pg-ai-key', ($('#ai-key') as HTMLInputElement).value.trim())
+      localStorage.setItem('pg-ai-model', ($('#ai-model') as HTMLInputElement).value.trim())
+      localStorage.setItem('pg-ai-url', ($('#ai-url') as HTMLInputElement).value.trim())
+      // also share with the landing page demo
+      localStorage.setItem('penna-ai-key', ($('#ai-key') as HTMLInputElement).value.trim())
+      localStorage.setItem('penna-ai-provider', ($('#ai-provider') as HTMLSelectElement).value)
+      mount()
+    })
+
+    let editor: PennaEditor | null = null
+    let active = 'rendered'
+    const render = () => {
+      if (!editor) return
+      const json = editor.getJSON()
+      $('#out-rendered').innerHTML = renderToHTML(json)
+      $('#out-html').textContent = editor.getHTML().replace(/></g, '>\n<')
+      $('#out-markdown').textContent = editor.getMarkdown()
+      $('#out-json').textContent = JSON.stringify(json, null, 2)
+    }
+    const mount = () => {
+      editor?.destroy()
+      $('#editor').innerHTML = ''
+      editor = (window as any).penna = createEditor('#editor', {
+        content: SAMPLE,
+        autosave: { key: 'playground' },
+        typography: { bodyFontFamily: 'Inter', headingFontFamily: 'Plus Jakarta Sans' },
+        readonly: ($('#opt-readonly') as HTMLInputElement).checked,
+        toolbar: ($('#opt-toolbar') as HTMLInputElement).checked,
+        theme: ($('#opt-theme') as HTMLSelectElement).value as any,
+        extensions: [ai({ ...aiCfg(), onError: (e) => alert(e.message) })],
+        onUpdate: render,
+      })
+      render()
+    }
+    mount()
+
+    $('#opt-readonly').addEventListener('change', (e) => { if (editor) editor.readonly = (e.target as HTMLInputElement).checked })
+    $('#opt-toolbar').addEventListener('change', mount)
+    // keep the rendered panel on the same theme as the editor (auto = follow the site toggle)
+    const syncOutTheme = () => {
+      const t = ($('#opt-theme') as HTMLSelectElement).value
+      const site = document.documentElement.dataset.theme
+      if (t !== 'auto') $('#out-rendered').dataset.theme = t
+      else if (site) $('#out-rendered').dataset.theme = site
+      else delete $('#out-rendered').dataset.theme
+    }
+    syncOutTheme()
+    $('#theme').addEventListener('click', () => queueMicrotask(syncOutTheme))
+    $('#opt-theme').addEventListener('change', (e) => { if (editor) editor.theme = (e.target as HTMLSelectElement).value as any; syncOutTheme() })
+    $('#opt-clear').addEventListener('click', () => { editor?.setHTML(''); editor?.focus() })
+    $('#opt-sample').addEventListener('click', () => { editor?.setHTML(SAMPLE) })
+
+    document.querySelectorAll<HTMLButtonElement>('.out [role=tab]').forEach((b) =>
+      b.addEventListener('click', () => {
+        active = b.dataset.tab!
+        document.querySelectorAll('.out [role=tab]').forEach((x) => x.setAttribute('aria-selected', String(x === b)))
+        document.querySelectorAll<HTMLElement>('.panel').forEach((p) => (p.hidden = p.id !== `out-${active}`))
+      }),
+    )
+    $('#copy-out').addEventListener('click', () => {
+      const el = $(`#out-${active}`)
+      navigator.clipboard.writeText(active === 'rendered' ? el.innerHTML : el.textContent ?? '')
+      $('#copy-out').textContent = 'Copied!'
+      setTimeout(() => ($('#copy-out').textContent = 'Copy'), 1200)
+    })
+  </script>
+</Base>

@@ -1,0 +1,14 @@
+node_modules
+dist
+.astro
+.pnpm-store
+.superpowers
+
+# secrets: never commit keys, keep them in local env files
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+.release
+docs/superpowers

@@ -1,0 +1,49 @@
+{
+  "name": "@abhinavakhil/penna-ai",
+  "version": "0.1.0",
+  "description": "Provider-agnostic AI extension for @abhinavakhil/penna-core (free Groq default, any OpenAI-compatible API)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavakhil/Penna.git",
+    "directory": "packages\\ai\\package.json"
+  },
+  "homepage": "https://github.com/abhinavakhil/Penna#readme",
+  "keywords": [
+    "editor",
+    "wysiwyg",
+    "rich-text",
+    "prosemirror",
+    "markdown"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abhinavakhil/penna-core": "workspace:*",
+    "prosemirror-state": "^1.4.3",
+    "prosemirror-view": "^1.40.1",
+    "prosemirror-keymap": "^1.2.3"
+  },
+  "peerDependencies": {},
+  "publishConfig": {
+    "access": "public"
+  }
+}

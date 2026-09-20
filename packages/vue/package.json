@@ -1,0 +1,51 @@
+{
+  "name": "@abhinavakhil/penna-vue",
+  "version": "0.1.0",
+  "description": "Vue 3 bindings for @abhinavakhil/penna-core",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavakhil/Penna.git",
+    "directory": "packages\\vue\\package.json"
+  },
+  "homepage": "https://github.com/abhinavakhil/Penna#readme",
+  "keywords": [
+    "editor",
+    "wysiwyg",
+    "rich-text",
+    "prosemirror",
+    "markdown"
+  ],
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@abhinavakhil/penna-core": "workspace:*"
+  },
+  "peerDependencies": {
+    "vue": ">=3.3"
+  },
+  "devDependencies": {
+    "vue": "^3.5.0"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
