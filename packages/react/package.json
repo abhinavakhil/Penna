@@ -1,12 +1,12 @@
 {
   "name": "@abhinavakhil/penna-react",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "React bindings for @abhinavakhil/penna-core",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abhinavakhil/Penna.git",
-    "directory": "packages\\react\\package.json"
+    "directory": "packages/react"
   },
   "homepage": "https://github.com/abhinavakhil/Penna#readme",
   "keywords": [

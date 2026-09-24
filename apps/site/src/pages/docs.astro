@@ -1,9 +1,9 @@
 ---
 import Base from '../layouts/Base.astro'
 const toc = [
-  ['install', 'Install'], ['html', 'Plain HTML / any framework'], ['react', 'React'], ['vue', 'Vue'], ['angular', 'Angular, Svelte, Solid'], ['vanilla', 'Vanilla JS API'],
+  ['install', 'Install'], ['html', 'Plain HTML / any framework'], ['react', 'React'], ['vue', 'Vue'], ['angular', 'Angular'], ['svelte', 'Svelte, Solid, Lit'], ['vanilla', 'Vanilla JS API'],
   ['options', 'Options'], ['content', 'Content: HTML, Markdown, JSON'], ['rendering', 'Rendering content anywhere'], ['uploads', 'Images & uploads'],
-  ['ai', 'AI'], ['theming', 'Theming & dark mode'], ['extensions', 'Extensions & custom menus'], ['shortcuts', 'Keyboard shortcuts'],
+  ['ai', 'AI'], ['theming', 'Themes, dark mode & RTL'], ['builtins', 'Built-in extensions'], ['extensions', 'Writing your own extension'], ['shortcuts', 'Keyboard shortcuts'],
 ]
 const c = (s: string) => s
 ---
@@ -14,18 +14,19 @@ const c = (s: string) => s
     </nav>
     <article>
       <h1>Documentation</h1>
-      <p class="lead">Penna is a headless-when-you-want, batteries-included-when-you-don't editor built on ProseMirror. Five packages, all MIT:</p>
+      <p class="lead">Penna is a headless-when-you-want, batteries-included-when-you-don't editor built on ProseMirror. Six packages, all MIT:</p>
       <table class="pk">
         <tr><td><code>@abhinavakhil/penna-core</code></td><td>The editor, its UI, commands, Markdown/HTML/JSON I/O, <code>renderToHTML</code>, and <code>penna.css</code>.</td></tr>
-        <tr><td><code>@abhinavakhil/penna-element</code></td><td><code>&lt;penna-editor&gt;</code> web component. Use it from Angular, Svelte, Solid, Lit, HTMX, plain HTML.</td></tr>
+        <tr><td><code>@abhinavakhil/penna-element</code></td><td><code>&lt;penna-editor&gt;</code> web component. Use it from Svelte, Solid, Lit, HTMX, plain HTML.</td></tr>
         <tr><td><code>@abhinavakhil/penna-react</code></td><td><code>&lt;Penna&gt;</code>, <code>usePenna()</code>, <code>usePennaState()</code>, <code>&lt;PennaContent&gt;</code>.</td></tr>
         <tr><td><code>@abhinavakhil/penna-vue</code></td><td>Same for Vue 3, with <code>v-model</code>.</td></tr>
+        <tr><td><code>@abhinavakhil/penna-angular</code></td><td><code>&lt;ngx-penna&gt;</code> with <code>ngModel</code> and reactive forms, <code>providePenna()</code>, <code>&lt;ngx-penna-content&gt;</code>. SSR-safe.</td></tr>
         <tr><td><code>@abhinavakhil/penna-ai</code></td><td>AI extension: free providers, streaming, accept/discard UI.</td></tr>
       </table>
 
       <h2 id="install">Install</h2>
       <pre class="code">npm i @abhinavakhil/penna-core            <span class="c"># always</span>
-npm i @abhinavakhil/penna-react           <span class="c"># or @abhinavakhil/penna-vue, or @abhinavakhil/penna-element</span>
+npm i @abhinavakhil/penna-react           <span class="c"># or -vue, -angular, or -element</span>
 npm i @abhinavakhil/penna-ai              <span class="c"># optional</span></pre>
       <p>Import the stylesheet once, anywhere: <code>import '@abhinavakhil/penna-core/penna.css'</code>. It styles the editor <em>and</em> rendered content.</p>
 
@@ -91,12 +92,26 @@ const doc = ref(null)
   &lt;PennaContent :json="doc" /&gt;
 &lt;/template&gt;`)}></pre>
 
-      <h2 id="angular">Angular, Svelte, Solid, Lit…</h2>
-      <p>Use <code>@abhinavakhil/penna-element</code>. Import it once (e.g. in <code>main.ts</code>), then use the tag. Angular needs <code>CUSTOM_ELEMENTS_SCHEMA</code> on the module/component.</p>
-      <pre class="code" set:html={c(`// Angular
-&lt;penna-editor [value]="html" (change)="html = $event.detail.html" placeholder="Write…"&gt;&lt;/penna-editor&gt;
+      <h2 id="angular">Angular</h2>
+      <p>Use <code>@abhinavakhil/penna-angular</code>: a standalone component that works with <code>ngModel</code>, <code>formControl</code> and <code>formControlName</code>. A disabled control makes the editor read-only. Add <code>node_modules/@abhinavakhil/penna-core/dist/penna.css</code> to <code>styles</code> in <code>angular.json</code>.</p>
+      <pre class="code" set:html={c(`import { PennaEditorComponent, PennaContentComponent, providePenna } from '@abhinavakhil/penna-angular'
 
-// Svelte
+@Component({
+  imports: [PennaEditorComponent, PennaContentComponent, ReactiveFormsModule],
+  template: \`
+    &lt;ngx-penna [formControl]="story" format="markdown" placeholder="Tell your story…" theme="auto" /&gt;
+    &lt;ngx-penna-content [json]="saved" /&gt;
+  \`,
+})
+export class StoryForm { story = new FormControl('', Validators.required) }
+
+// app-wide defaults, e.g. extensions every editor should have
+bootstrapApplication(App, { providers: [providePenna({ extensions: [shortcuts()] })] })`)}></pre>
+      <p>Inputs mirror the options below (<code>placeholder</code>, <code>readonly</code>, <code>theme</code>, <code>dir</code>, <code>toolbar</code>, <code>extensions</code>…, plus <code>options</code> for everything else). Outputs: <code>ready</code>, <code>valueChange</code>, <code>contentChange</code>, <code>focused</code>, <code>blurred</code>. It runs outside the Angular zone and does nothing on the server.</p>
+
+      <h2 id="svelte">Svelte, Solid, Lit…</h2>
+      <p>Use <code>@abhinavakhil/penna-element</code>. Import it once, then use the tag.</p>
+      <pre class="code" set:html={c(`// Svelte
 &lt;penna-editor value={html} on:change={(e) =&gt; (html = e.detail.html)} /&gt;
 
 // Solid
@@ -111,7 +126,8 @@ editor.getJSON() / editor.getHTML() / editor.getMarkdown() / editor.getText()
 editor.setJSON(json) / editor.setHTML(html) / editor.setMarkdown(md)
 editor.insertContent('&lt;p&gt;hi&lt;/p&gt;')            // at the cursor
 editor.readonly = true                          // toggle read-only
-editor.theme = 'dark'                           // 'light' | 'dark' | 'auto'
+editor.theme = 'dark'                           // 'light' | 'dark' | 'sepia' | 'auto'
+editor.dir = 'rtl'                              // 'ltr' | 'rtl' | 'auto'
 editor.focus() / editor.isEmpty() / editor.wordCount()
 editor.exec(editor.commands.heading(2))         // run any command
 editor.exec(editor.commands.image('https://…'))
@@ -126,7 +142,8 @@ editor.destroy()`)}></pre>
         <tr><td><code>content</code></td><td>Initial content: HTML string, Markdown string (set <code>contentFormat: 'markdown'</code>) or JSON doc.</td></tr>
         <tr><td><code>placeholder</code></td><td>Empty-document hint. Empty lines show "Type '/' for commands".</td></tr>
         <tr><td><code>readonly</code></td><td>Start read-only. Toggle later with <code>editor.readonly</code>.</td></tr>
-        <tr><td><code>theme</code></td><td><code>'auto'</code> (default, follows system), <code>'light'</code>, <code>'dark'</code>.</td></tr>
+        <tr><td><code>theme</code></td><td><code>'auto'</code> (default: follows a <code>data-theme</code> or <code>.dark</code> ancestor, then the system), <code>'light'</code>, <code>'dark'</code>, <code>'sepia'</code>.</td></tr>
+        <tr><td><code>dir</code></td><td><code>'ltr'</code>, <code>'rtl'</code> or <code>'auto'</code>. RTL mirrors lists, quotes, menus and the drag handle.</td></tr>
         <tr><td><code>toolbar</code></td><td><code>false</code> to hide the fixed toolbar, or an array of items to customise it.</td></tr>
         <tr><td><code>bubbleMenu</code> / <code>slashMenu</code></td><td><code>false</code> to disable, or an array of items.</td></tr>
         <tr><td><code>dragHandle</code> / <code>statusBar</code></td><td><code>false</code> to disable.</td></tr>
@@ -183,8 +200,8 @@ createEditor('#editor', {
       <p><b>Custom actions:</b> an action is <code>{'{ id, title, prompt(ctx) → messages, mode?: "replace" | "insert", askInput? }'}</code>. Pass <code>actions</code> to replace the list, or spread <code>defaultActions</code> to extend it.</p>
       <p><b>Production note:</b> a key in the browser is visible to your users. Point <code>baseUrl</code> at a tiny proxy that adds the key server-side, or pass a custom <code>fetch</code>. Hosted Penna AI (no key, usage-billed) is planned; <code>provider: 'penna'</code> is reserved for it.</p>
 
-      <h2 id="theming">Theming & dark mode</h2>
-      <p>Dark mode follows <code>prefers-color-scheme</code> automatically. Force it with <code>theme: 'dark'</code> or <code>data-theme="dark"</code> on any ancestor (or the editor root). Every color is a CSS variable on <code>.penna</code> and <code>.penna-content</code>:</p>
+      <h2 id="theming">Themes, dark mode & RTL</h2>
+      <p>On <code>auto</code>, Penna follows <code>data-theme="dark"</code> (or Tailwind's <code>.dark</code>) on any ancestor, then <code>prefers-color-scheme</code>. Force a theme with <code>theme: 'light' | 'dark' | 'sepia'</code>. For Urdu, Arabic or Hebrew set <code>dir: 'rtl'</code>; the stylesheet uses logical properties, so everything mirrors. Every color is a CSS variable on <code>.penna</code> and <code>.penna-content</code>:</p>
       <pre class="code" set:html={c(`.penna, .penna-content {
   --pn-font: Inter, sans-serif;
   --pn-accent: #e11d48;        /* links, active buttons, selection */
@@ -208,7 +225,31 @@ createEditor('#editor', {
   },
 })`)}></pre>
 
-      <h2 id="extensions">Extensions & custom menus</h2>
+      <h2 id="builtins">Built-in extensions</h2>
+      <p>All opt-in and exported from <code>@abhinavakhil/penna-core</code>. Add only the ones you need:</p>
+      <pre class="code" set:html={c(`import { shortcuts, fundraisingShortcuts, proofread, mentions, mergeFields, comments, versionHistory, focusMode } from '@abhinavakhil/penna-core'
+
+createEditor('#editor', { extensions: [
+  shortcuts({ items: fundraisingShortcuts }),        // /budget, /impact, /milestones · Ctrl+Alt+B/I/M
+  proofread({ onChange: (s) =&gt; showScore(s.score) }), // typos, wordy phrases, long sentences
+  mentions({ items: (q) =&gt; api.people(q) }),        // @Name
+  mergeFields({ fields: [{ key: 'first_name', label: 'first name' }] }), // {{first_name}}
+  comments({ onAdd: (c) =&gt; api.createThread(c), onSelect: openThread }),
+  versionHistory({ key: 'campaign-42', author: user.name }),
+  focusMode({ level: 'sentence' }),
+] })`)}></pre>
+      <table class="opts">
+        <tr><td><code>shortcuts()</code></td><td>Blocks you can drop in from the slash menu or with a hotkey. Pass <code>items</code> as HTML or Markdown; people can select text and press <b>+</b> in the bubble to save their own. Saved shortcuts live in localStorage (<code>storageKey</code>), and <code>onChange</code> lets you sync them. API: <code>list()</code>, <code>insert(id)</code>, <code>create(title)</code>, <code>remove(id)</code>.</td></tr>
+        <tr><td><code>proofread()</code></td><td>Underlines by category (correctness, clarity, engagement, delivery, long sentences) with one-click fixes. Decorations only, so the saved document never changes by itself. Bring your own <code>rules</code>; API: <code>summary()</code>, <code>fixAll()</code>, <code>setCategory()</code>.</td></tr>
+        <tr><td><code>mentions()</code></td><td><kbd>@</kbd> opens a list from <code>items(query)</code> (sync or async). Saved as <code>&lt;span data-mention&gt;</code>, <code>@Name</code> in Markdown.</td></tr>
+        <tr><td><code>mergeFields()</code></td><td><kbd>&#123;&#123;</kbd> opens your fields. Saved as <code>&#123;&#123;key&#125;&#125;</code> in Markdown and text, ready for your email sender. <code>setPreview(&#123; first_name: 'Aisha' &#125;)</code> shows real values.</td></tr>
+        <tr><td><code>comments()</code></td><td>Anchors a thread id to the selected words; the thread itself lives in your database. API: <code>add()</code>, <code>resolve(id)</code>, <code>list()</code>, <code>setActive(id)</code>.</td></tr>
+        <tr><td><code>versionHistory()</code></td><td>Autosaves after 2s idle, named versions, a word diff against now, and restore (which saves first, so it can be undone). Adds a clock button to the toolbar.</td></tr>
+        <tr><td><code>focusMode()</code></td><td>Dims everything except the current sentence or paragraph, keeps the caret line mid-screen, and fades the toolbar while you type.</td></tr>
+      </table>
+      <p>Helpers for your own features: <code>readability(text)</code> (grade and reading age), <code>diffWords</code> / <code>diffHTML</code>, <code>commands.insertStarter('My name is ___')</code>, and <code>suggestPlugin()</code> to build your own trigger-character menu.</p>
+
+      <h2 id="extensions">Writing your own extension</h2>
       <p>An extension is a plain object. This is how <code>@abhinavakhil/penna-ai</code> is built, and it's enough for most needs:</p>
       <pre class="code" set:html={c(`import { commands, type PennaExtension } from '@abhinavakhil/penna-core'
 
@@ -235,6 +276,8 @@ createEditor('#editor', { extensions: [signature] })`)}></pre>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>0-3</kbd></td><td>Paragraph / heading 1-3</td></tr>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>7</kbd> / <kbd>8</kbd> / <kbd>9</kbd></td><td>Numbered / bullet / task list</td></tr>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>B</kbd>, <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>C</kbd></td><td>Quote, code block</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>T</kbd></td><td>Table</td></tr>
+        <tr><td><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd> / <kbd>I</kbd> / <kbd>M</kbd></td><td>Budget / impact tiers / milestones (with <code>shortcuts(&#123; items: fundraisingShortcuts &#125;)</code>)</td></tr>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>L</kbd> / <kbd>E</kbd> / <kbd>R</kbd></td><td>Align left / center / right</td></tr>
         <tr><td><kbd>Tab</kbd> / <kbd>Shift</kbd>+<kbd>Tab</kbd></td><td>Indent / outdent list, next / previous table cell</td></tr>
         <tr><td><kbd>Ctrl</kbd>+<kbd>Enter</kbd></td><td>Exit code block · <kbd>Shift</kbd>+<kbd>Enter</kbd> line break</td></tr>

@@ -1,0 +1,50 @@
+{
+  "name": "@abhinavakhil/penna-angular",
+  "version": "0.2.0",
+  "description": "Angular bindings for @abhinavakhil/penna-core",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/abhinavakhil/Penna.git",
+    "directory": "packages/angular"
+  },
+  "homepage": "https://github.com/abhinavakhil/Penna#readme",
+  "keywords": [
+    "editor",
+    "wysiwyg",
+    "rich-text",
+    "prosemirror",
+    "markdown",
+    "angular"
+  ],
+  "sideEffects": false,
+  "scripts": {
+    "build": "ng-packagr -p ng-package.json -c tsconfig.lib.json",
+    "typecheck": "tsc -p tsconfig.lib.json --noEmit"
+  },
+  "dependencies": {
+    "@abhinavakhil/penna-core": "workspace:*",
+    "tslib": "^2.3.0"
+  },
+  "peerDependencies": {
+    "@angular/common": ">=16.0.0",
+    "@angular/core": ">=16.0.0",
+    "@angular/forms": ">=16.0.0",
+    "@angular/platform-browser": ">=16.0.0"
+  },
+  "devDependencies": {
+    "@angular/common": "^22.2.0",
+    "@angular/compiler": "^22.2.0",
+    "@angular/compiler-cli": "^22.2.0",
+    "@angular/core": "^22.2.0",
+    "@angular/forms": "^22.2.0",
+    "@angular/platform-browser": "^22.2.0",
+    "ng-packagr": "^22.2.0",
+    "rxjs": "^7.8.0",
+    "typescript": "~6.0.3"
+  },
+  "publishConfig": {
+    "access": "public",
+    "directory": "dist"
+  }
+}

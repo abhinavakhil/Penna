@@ -1,12 +1,12 @@
 {
   "name": "@abhinavakhil/penna-core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Framework-agnostic WYSIWYG editor core with slash commands, media, tables, markdown and more",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abhinavakhil/Penna.git",
-    "directory": "packages\\core\\package.json"
+    "directory": "packages/core"
   },
   "homepage": "https://github.com/abhinavakhil/Penna#readme",
   "keywords": [

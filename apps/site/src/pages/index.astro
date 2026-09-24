@@ -3,7 +3,11 @@ import Base from '../layouts/Base.astro'
 import { icons } from '@abhinavakhil/penna-core'
 
 const features = [
-  ['sparkles', 'Bubble menu', 'Select text and the formatting you need appears right there. Bold, links, highlight, headings, AI.'],
+  ['sparkles', 'Bubble menu', 'Select text and the formatting you need appears right there. Bold, links, highlight, AI, and <b>Turn into</b> any block type.'],
+  ['plus', 'Shortcuts', 'Type <code>/budget</code> or <code>/impact</code>, or hit a hotkey, to drop in ready-made blocks. Select anything and press <kbd>+</kbd> to save your own.'],
+  ['check', 'Proofreader', 'Typos, wordy phrases and hard-to-read sentences get underlined as you write. One click to fix, and a live score. Nothing changes unless you accept.'],
+  ['history', 'Version history', 'Quiet autosaves, named versions, a word-by-word diff against now, and one-click restore. Pin comments to the exact words, too.'],
+  ['at', 'Mentions & merge fields', 'Type <kbd>@</kbd> to mention someone from your API, or <code>{{first_name}}</code> for per-reader fields you can preview with real values.'],
   ['grip', 'Drag handles', 'Grab any block and move it. Click <kbd>+</kbd> to insert below. Notion-smooth, zero config.'],
   ['image', 'Images & video', 'Drop, paste or upload. Resize by dragging, align, alt text. Inline by default, or bring your own storage.'],
   ['video', 'Embeds', 'Paste a YouTube, Vimeo, Loom, Figma or CodePen link and it just becomes the thing.'],
@@ -11,12 +15,12 @@ const features = [
   ['text', 'Markdown in & out', 'Type <code>**bold**</code>, <code># heading</code>, <code>- [ ] task</code>. Import and export lossless Markdown, HTML or JSON.'],
   ['search', 'Find & replace', 'With match counts, case toggle and replace-all. <kbd>Ctrl</kbd>+<kbd>F</kbd> like you\'d expect.'],
   ['taskList', 'Task lists', 'Real checkboxes that toggle, serialize to <code>- [x]</code> Markdown and render outside the editor.'],
-  ['color', 'Dark mode', 'Follows the system, or force it. Every color is a CSS variable, so it matches your brand in one line.'],
+  ['color', 'Light, dark, sepia & RTL', 'Follows your app\'s theme or the system. Right-to-left for Urdu and Arabic, a focus mode that dims all but the current sentence, and every color is a CSS variable.'],
   ['copy', 'Render anywhere', '<code>renderToHTML(json)</code> needs no DOM. Show saved content on the server, in an email, in a PDF pipeline.'],
 ]
 
 const compare: [string, string, string, string, string][] = [
-  ['Works in any framework', '✓', 'React only', 'Vanilla + wrappers', '✓ (jQuery-era API)'],
+  ['Works in any framework', '✓ incl. Angular forms', 'React only', 'Vanilla + wrappers', '✓ (jQuery-era API)'],
   ['Slash commands & bubble menu', '✓', '✓', '✗', 'Partial'],
   ['Drag handles', '✓', '✓', '✗', '✗'],
   ['Tables with merge / resize', '✓', '✗', 'Plugin', '✓'],
@@ -25,7 +29,7 @@ const compare: [string, string, string, string, string][] = [
   ['Render content without the editor', '✓ no DOM needed', '✗', '✗', '✗'],
   ['Built-in AI', '✓ free providers', 'OpenAI only', '✗', '✗'],
   ['Find & replace, word count, autosave', '✓', '✗', '✗', 'Plugins'],
-  ['Dark mode & CSS variables', '✓', 'Tailwind only', 'Themes', '✗'],
+  ['Dark mode & CSS variables', '✓ light, dark, sepia', 'Tailwind only', 'Themes', '✗'],
   ['License', 'MIT, no telemetry', 'Apache-2.0', 'BSD', 'Paid, license key'],
 ]
 
@@ -51,12 +55,14 @@ const installs = {
 <span class="k">&lt;template&gt;</span>
   <span class="k">&lt;Penna</span> v-model="html" placeholder="Write something…" <span class="k">/&gt;</span>
 <span class="k">&lt;/template&gt;</span>`,
-  angular: `<span class="c">// main.ts — registers &lt;penna-editor&gt;</span>
-<span class="k">import</span> <span class="s">'@abhinavakhil/penna-element'</span>
-<span class="k">import</span> <span class="s">'@abhinavakhil/penna-core/penna.css'</span>
+  angular: `<span class="k">import</span> { PennaEditorComponent } <span class="k">from</span> <span class="s">'@abhinavakhil/penna-angular'</span>
+<span class="c">// angular.json styles: "node_modules/@abhinavakhil/penna-core/dist/penna.css"</span>
 
-<span class="c">// component (add CUSTOM_ELEMENTS_SCHEMA)</span>
-<span class="k">&lt;penna-editor</span> [value]="html" (change)="html = $event.detail.html"<span class="k">&gt;&lt;/penna-editor&gt;</span>`,
+@<span class="f">Component</span>({
+  imports: [PennaEditorComponent, FormsModule],
+  template: <span class="s">\`&lt;ngx-penna [(ngModel)]="html" placeholder="Write something…" /&gt;\`</span>,
+})
+<span class="k">export class</span> <span class="f">Editor</span> { html = <span class="s">''</span> }`,
   svelte: `<span class="k">&lt;script&gt;</span>
   <span class="k">import</span> <span class="s">'@abhinavakhil/penna-element'</span>
   <span class="k">import</span> <span class="s">'@abhinavakhil/penna-core/penna.css'</span>
@@ -97,17 +103,17 @@ const renderSnippet = `<span class="c">// server, edge, worker — no DOM requir
 <span class="k">return</span> <span class="s">\`&lt;article class="penna-content"&gt;\${html}&lt;/article&gt;\`</span>`
 
 const slashCount = 16
-const tour = [['slash', 'Slash commands'], ['bubble', 'Bubble menu'], ['tables', 'Tables'], ['tasks', 'Task lists'], ['markdown', 'Markdown'], ['ai', 'Ask AI']]
+const tour = [['slash', 'Slash commands'], ['shortcuts', 'Shortcuts'], ['bubble', 'Bubble menu'], ['proofread', 'Proofreader'], ['tables', 'Tables'], ['tasks', 'Task lists'], ['markdown', 'Markdown'], ['ai', 'Ask AI']]
 const stack = ['React', 'Vue', 'Angular', 'Svelte', 'Solid', 'Plain HTML', 'Astro', 'Next.js', 'Nuxt']
 const problems = [
-  ['Framework lock-in', 'Most editors are React-only or ship a jQuery-era API. Penna is a plain element with thin React and Vue wrappers, so one editor serves <b>every</b> app you own.', 'Portability'],
+  ['Framework lock-in', 'Most editors are React-only or ship a jQuery-era API. Penna is a plain element with thin React, Vue and Angular wrappers, so one editor serves <b>every</b> app you own.', 'Portability'],
   ['The plugin hunt', 'Tables, images, embeds, find & replace, task lists: usually five plugins from five authors. Here they are one import, tested together, styled together.', 'Batteries'],
   ['AI behind a paywall', 'Built-in AI elsewhere means one vendor and a bill. Penna ships free Groq, Gemini and OpenRouter presets, plus Ollama for fully local.', 'Free AI'],
 ]
 const aiCards: [string, string, string[] | null][] = [
   ['Free providers built in', 'Presets for every free tier, plus Ollama for fully local. Any OpenAI-compatible endpoint is one line.', ['Groq', 'Gemini', 'OpenRouter', 'Together', 'Ollama', 'OpenAI', 'Mistral']],
   ['Every writing action', 'Continue, improve, fix grammar, shorten, expand, simplify, summarize, translate, change tone, or type any instruction.', null],
-  ['Preview before insert', 'Responses stream into a preview. Accept, retry, or discard. Nothing touches the document until you say so.', null],
+  ['Preview before insert', 'Responses stream into a preview, and rewrites show a word-by-word diff. Accept, retry, or discard. Nothing touches the document until you say so.', null],
   ['Your key stays yours', 'Requests go straight from the browser to the provider you chose. Nothing is sent until you trigger an action.', null],
 ]
 const stats = [
@@ -120,8 +126,8 @@ const stats = [
 <Base>
   <section class="hero">
     <div class="hero-inner">
-      <a class="pill-tag rise" style="--i:0" href="/docs">NEW · Typography controls <span aria-hidden="true">›</span></a>
-      <h1 class="rise" style="--i:1"><span class="pri">The rich text editor<br />people actually enjoy.</span><span class="sec">Notion-feel editing. Markdown fluency. Free AI.</span></h1>
+      <a class="pill-tag rise" style="--i:0" href="/playground">NEW · Shortcuts, proofreader &amp; Angular <span aria-hidden="true">›</span></a>
+      <h1 class="rise" style="--i:1"><span class="pri">The rich text editor<br />people actually enjoy.</span><span class="sec">Notion-feel editing. Smart shortcuts. Free AI.</span></h1>
       <div class="cta-row rise" style="--i:2">
         <a class="btn-hero" href="/playground">Try it. It's free.</a>
         <span class="micro">MIT licensed.<br />No sign-up. No credit card.</span>
@@ -458,14 +464,16 @@ const stats = [
   </style>
 
   <script>
-    import { createEditor } from '@abhinavakhil/penna-core'
+    import { createEditor, shortcuts, fundraisingShortcuts, proofread } from '@abhinavakhil/penna-core'
     import { ai } from '@abhinavakhil/penna-ai'
     const key = localStorage.getItem('penna-ai-key') || ''
     const provider = (localStorage.getItem('penna-ai-provider') as any) || 'groq'
 
     const TOUR: Record<string, string> = {
       slash: `<h1>Slash commands</h1><p>Put the cursor on an empty line and type <code>/</code>. Headings, lists, tables, images, callouts, code, embeds and AI, all fuzzy-searchable from the keyboard.</p><p></p><div data-callout="⌘"><p>Try it now: click the empty line above and press <kbd>/</kbd>.</p></div>`,
-      bubble: `<h1>Bubble menu</h1><p>Select any of this text and the formatting you need appears right where you are. <strong>Bold</strong>, <em>italic</em>, <code>code</code>, <a href="https://penna.dev">links</a>, <mark>highlight</mark>, headings, and a shortcut to AI.</p><p>No toolbar to hunt through. No modes to toggle.</p>`,
+      shortcuts: `<h1>Shortcuts</h1><p>Type <code>/budget</code>, <code>/impact</code> or <code>/milestones</code> on an empty line, or press <kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>B</kbd>. A ready-made block drops in, and every cell stays editable.</p><p></p><div data-callout="⭐"><p>Select any text and press <strong>+</strong> in the bubble to save it as your own shortcut.</p></div>`,
+      proofread: `<h1>Proofreader</h1><p>We definately need more volunteers in order to finish the beach clean before the tide comes in.</p><p>Click an underline to see the fix. Spelling, wordy phrases and long sentences are flagged as you type, and nothing changes until you accept.</p>`,
+      bubble: `<h1>Bubble menu</h1><p>Select any of this text and the formatting you need appears right where you are. <strong>Bold</strong>, <em>italic</em>, <code>code</code>, <a href="https://penna.dev">links</a>, <mark>highlight</mark>, AI, and <strong>Turn into</strong> for any block type.</p><p>No toolbar to hunt through. No modes to toggle.</p>`,
       tables: `<h1>Real tables</h1><table><tr><th><p>Feature</p></th><th><p>Penna</p></th><th><p>Others</p></th></tr><tr><td><p>Merge cells</p></td><td><p>✅ select two cells</p></td><td><p>Plugin</p></td></tr><tr><td><p>Resize columns</p></td><td><p>✅ drag the edge</p></td><td><p>✗</p></td></tr><tr><td><p>Header rows</p></td><td><p>✅</p></td><td><p>Partial</p></td></tr></table><p>Add rows and columns from the handle, merge by selecting cells, resize by dragging.</p>`,
       tasks: `<h1>Task lists</h1><ul data-task=""><li data-checked="true"><p>Real checkboxes that toggle</p></li><li data-checked="true"><p>Serialize to <code>- [x]</code> Markdown</p></li><li data-checked="false"><p>Render outside the editor with <code>renderToHTML</code></p></li><li data-checked="false"><p>Click one of these boxes</p></li></ul>`,
       markdown: `<h1>Markdown in &amp; out</h1><p>Type <code>**bold**</code>, <code># heading</code>, <code>- [ ] task</code> or <code>\`\`\`</code> and Penna converts as you go. Import and export lossless Markdown, HTML or JSON.</p><pre data-language="md"><code>## Shipping notes
@@ -476,7 +484,7 @@ const stats = [
     const editor = ((window as any).penna = createEditor('#hero-editor', {
       autofocus: false,
       theme: (document.documentElement.dataset.theme as any) || 'auto',
-      extensions: [ai({ provider, apiKey: key, onError: (e) => alert(e.message + '\n\nAdd a free key in the Playground → AI settings.') })],
+      extensions: [ai({ provider, apiKey: key, onError: (e) => alert(e.message + '\n\nAdd a free key in the Playground → AI settings.') }), shortcuts({ items: fundraisingShortcuts }), proofread()],
       content: TOUR.slash,
     }))
 

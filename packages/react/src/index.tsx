@@ -1,5 +1,5 @@
 import { createContext, forwardRef, useContext, useEffect, useImperativeHandle, useLayoutEffect, useRef, useState, type CSSProperties } from 'react'
-import { createEditor, type PennaEditor, type PennaOptions } from '@abhinavakhil/penna-core'
+import { createEditor, type PennaEditor, type PennaOptions, type PennaTheme } from '@abhinavakhil/penna-core'
 
 export type { PennaEditor, PennaOptions }
 
@@ -52,7 +52,8 @@ export const Penna = forwardRef<PennaEditor | null, PennaProps>(function Penna({
   }, [value, editor])
 
   useEffect(() => { if (editor && options.readonly !== undefined) editor.readonly = options.readonly }, [options.readonly, editor])
-  useEffect(() => { if (editor && options.theme) editor.theme = options.theme }, [options.theme, editor])
+  useEffect(() => { if (editor) editor.theme = options.theme ?? 'auto' }, [options.theme, editor])
+  useEffect(() => { if (editor && options.dir) editor.dir = options.dir }, [options.dir, editor])
 
   useImperativeHandle(ref, () => editor as PennaEditor, [editor])
 
@@ -79,9 +80,9 @@ export function usePennaState<T>(editor: PennaEditor | null, select: (e: PennaEd
 }
 
 /** Render saved content without an editor (client or server). */
-export function PennaContent({ json, html, className, theme }: { json?: unknown; html?: string; className?: string; theme?: 'light' | 'dark' }) {
+export function PennaContent({ json, html, className, theme, dir }: { json?: unknown; html?: string; className?: string; theme?: Exclude<PennaTheme, 'auto'>; dir?: 'ltr' | 'rtl' | 'auto' }) {
   const out = html ?? (json ? renderToHTML(json) : '')
-  return <div className={`penna-content ${className ?? ''}`} data-theme={theme} dangerouslySetInnerHTML={{ __html: out }} />
+  return <div className={`penna-content ${className ?? ''}`} data-theme={theme} dir={dir} dangerouslySetInnerHTML={{ __html: out }} />
 }
 import { renderToHTML } from '@abhinavakhil/penna-core'
 export { renderToHTML }

@@ -196,9 +196,25 @@ export function clearFormatting(): Command {
   return (state, dispatch) => {
     const { from, to } = state.selection
     const tr = state.tr
-    Object.values(m).forEach((mk) => tr.removeMark(from, to, mk))
+    Object.values(m).forEach((mk) => { if (mk !== m.comment) tr.removeMark(from, to, mk) })
     tr.setBlockType(from, to, n.paragraph)
     dispatch?.(tr)
+    return true
+  }
+}
+
+/** Insert a sentence starter as a new paragraph and select its first blank, so typing fills it in. */
+export function insertStarter(text: string, blank = '___'): Command {
+  return (state, dispatch) => {
+    if (!dispatch) return true
+    const { $from } = state.selection
+    const para = n.paragraph.create(null, text ? schema.text(text) : null)
+    const empty = $from.parent.isTextblock && $from.parent.content.size === 0
+    const tr = empty ? state.tr.replaceWith($from.before(), $from.after(), para) : state.tr.insert($from.after(1), para)
+    const start = (empty ? $from.before() : $from.after(1)) + 1
+    const at = text.indexOf(blank)
+    const sel = at < 0 ? TextSelection.create(tr.doc, start + text.length) : TextSelection.create(tr.doc, start + at, start + at + blank.length)
+    dispatch(tr.setSelection(sel).scrollIntoView())
     return true
   }
 }
@@ -244,6 +260,9 @@ export const commands = {
   clearFormatting: clearFormatting(),
   updateNodeAttrs,
   toggleTaskItem,
+  insertStarter,
+  mention: (id: string, label: string) => insertNode(n.mention, { id, label }),
+  mergeField: (key: string, label?: string) => insertNode(n.merge_field, { key, label: label ?? null }),
   // tables
   addRowBefore, addRowAfter, addColumnBefore, addColumnAfter, deleteRow, deleteColumn, deleteTable, toggleHeaderRow, isInTable,
 }

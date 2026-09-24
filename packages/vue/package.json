@@ -1,12 +1,12 @@
 {
   "name": "@abhinavakhil/penna-vue",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "Vue 3 bindings for @abhinavakhil/penna-core",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/abhinavakhil/Penna.git",
-    "directory": "packages\\vue\\package.json"
+    "directory": "packages/vue"
   },
   "homepage": "https://github.com/abhinavakhil/Penna#readme",
   "keywords": [

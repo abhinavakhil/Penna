@@ -72,6 +72,7 @@ export const pennaKeymap = keymap({
   'Mod-Shift-9': commands.taskList,
   'Mod-Shift-b': commands.blockquote,
   'Mod-Alt-c': commands.codeBlock(),
+  'Mod-Alt-t': commands.table(),
   'Mod-Shift-l': commands.align('left'),
   'Mod-Shift-e': commands.align('center'),
   'Mod-Shift-r': commands.align('right'),

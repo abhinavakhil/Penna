@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "preserve",
+    "strict": true,
+    "skipLibCheck": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "outDir": "dist/out-tsc",
+    "types": [],
+    "paths": { "@abhinavakhil/penna-angular": ["../../packages/angular/dist"] }
+  },
+  "angularCompilerOptions": { "strictTemplates": true, "strictInjectionParameters": true },
+  "files": ["src/main.ts"]
+}

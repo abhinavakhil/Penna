@@ -4,34 +4,63 @@ import Base from '../layouts/Base.astro'
 <Base title="Playground — Penna" wide>
   <div class="wrap wide pg">
     <aside class="side">
-      <h1>Playground</h1>
-      <p class="muted">Everything here runs in your browser. Content autosaves locally.</p>
+      <header class="side-head">
+        <h1>Playground</h1>
+        <p class="muted">Runs in your browser. Content autosaves locally.</p>
+      </header>
 
-      <h2>Options</h2>
-      <label><input type="checkbox" id="opt-readonly" /> Read-only</label>
-      <label><input type="checkbox" id="opt-toolbar" checked /> Fixed toolbar</label>
-      <label>Theme <select id="opt-theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option></select></label>
-      <button class="btn" id="opt-clear">Clear content</button>
-      <button class="btn" id="opt-sample">Load sample</button>
+      <section class="card">
+        <h2>Editor</h2>
+        <div class="row">
+        <div class="field"><span>Theme</span><select id="opt-theme"><option value="auto">Auto</option><option value="light">Light</option><option value="dark">Dark</option><option value="sepia">Sepia</option></select></div>
+        <div class="field"><span>Direction</span><select id="opt-dir"><option value="ltr">LTR</option><option value="rtl">RTL</option></select></div>
+        </div>
+        <label class="toggle"><input type="checkbox" id="opt-toolbar" checked /><span>Fixed toolbar</span></label>
+        <label class="toggle"><input type="checkbox" id="opt-readonly" /><span>Read-only</span></label>
+        <div class="row"><button class="btn" id="opt-sample">Load sample</button><button class="btn" id="opt-clear">Clear</button></div>
+      </section>
 
-      <h2>AI settings</h2>
-      <p class="muted small">Keys are stored in <b>your</b> localStorage only. Get a free key at <a href="https://console.groq.com" target="_blank" rel="noopener">console.groq.com</a>, <a href="https://aistudio.google.com" target="_blank" rel="noopener">aistudio.google.com</a> or <a href="https://openrouter.ai" target="_blank" rel="noopener">openrouter.ai</a>.</p>
-      <label>Provider
-        <select id="ai-provider">
-          <option value="groq">Groq (free)</option><option value="gemini">Gemini (free)</option><option value="openrouter">OpenRouter (free models)</option><option value="together">Together (free)</option>
-          <option value="openai">OpenAI</option><option value="mistral">Mistral</option><option value="ollama">Ollama (local)</option><option value="openai-compatible">Custom OpenAI-compatible</option>
-        </select>
-      </label>
-      <label>API key <input type="password" id="ai-key" placeholder="gsk_…" autocomplete="off" /></label>
-      <label>Model <input type="text" id="ai-model" placeholder="(provider default)" /></label>
-      <label id="ai-url-row" hidden>Base URL <input type="url" id="ai-url" placeholder="https://…/v1" /></label>
-      <button class="btn primary" id="ai-save">Save & reload editor</button>
+      <section class="card">
+        <h2>Extensions</h2>
+        <label class="toggle"><input type="checkbox" class="ext" value="shortcuts" checked /><span>Shortcuts <small>/budget, /impact, or save your own</small></span></label>
+        <label class="toggle"><input type="checkbox" class="ext" value="proofread" checked /><span>Proofreader <small id="proof-score"></small></span></label>
+        <label class="toggle"><input type="checkbox" class="ext" value="mentions" checked /><span>Mentions &amp; merge fields <small>type @ or {"{{"}</small></span></label>
+        <label class="toggle sub"><input type="checkbox" id="opt-preview" /><span>Preview fields as Aisha</span></label>
+        <label class="toggle"><input type="checkbox" class="ext" value="comments" checked /><span>Comments</span></label>
+        <label class="toggle"><input type="checkbox" class="ext" value="history" checked /><span>Version history</span></label>
+        <label class="toggle"><input type="checkbox" class="ext" value="focus" /><span>Focus mode</span></label>
+      </section>
 
-      <h2>Shortcuts</h2>
-      <ul class="keys">
-        <li><kbd>/</kbd> insert block</li><li><kbd>Ctrl</kbd>+<kbd>J</kbd> ask AI</li><li><kbd>Ctrl</kbd>+<kbd>K</kbd> link</li><li><kbd>Ctrl</kbd>+<kbd>F</kbd> find & replace</li>
-        <li><kbd>Ctrl</kbd>+<kbd>Alt</kbd>+<kbd>1-3</kbd> heading</li><li><kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>7/8/9</kbd> lists</li><li><kbd>Ctrl</kbd>+<kbd>\</kbd> clear formatting</li><li><kbd>Tab</kbd> indent / next cell</li>
-      </ul>
+      <details class="card">
+        <summary><h2>AI settings</h2></summary>
+        <p class="muted small">Keys stay in <b>your</b> localStorage. Free keys: <a href="https://console.groq.com" target="_blank" rel="noopener">Groq</a>, <a href="https://aistudio.google.com" target="_blank" rel="noopener">Gemini</a>, <a href="https://openrouter.ai" target="_blank" rel="noopener">OpenRouter</a>.</p>
+        <div class="field"><span>Provider</span>
+          <select id="ai-provider">
+            <option value="groq">Groq (free)</option><option value="gemini">Gemini (free)</option><option value="openrouter">OpenRouter (free models)</option><option value="together">Together (free)</option>
+            <option value="openai">OpenAI</option><option value="mistral">Mistral</option><option value="ollama">Ollama (local)</option><option value="openai-compatible">Custom OpenAI-compatible</option>
+          </select>
+        </div>
+        <label class="field"><span>API key</span><input type="password" id="ai-key" placeholder="gsk_…" autocomplete="off" /></label>
+        <label class="field"><span>Model</span><input type="text" id="ai-model" placeholder="(provider default)" /></label>
+        <label class="field" id="ai-url-row" hidden><span>Base URL</span><input type="url" id="ai-url" placeholder="https://…/v1" /></label>
+        <button class="btn primary" id="ai-save">Save &amp; reload editor</button>
+      </details>
+
+      <details class="card">
+        <summary><h2>Keyboard shortcuts</h2></summary>
+        <dl class="keys">
+          <dt><kbd>/</kbd></dt><dd>Insert block or shortcut</dd>
+          <dt><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>B</kbd><kbd>I</kbd><kbd>M</kbd></dt><dd>Budget, tiers, milestones</dd>
+          <dt><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>T</kbd></dt><dd>Table</dd>
+          <dt><kbd>Ctrl</kbd><kbd>J</kbd></dt><dd>Ask AI</dd>
+          <dt><kbd>Ctrl</kbd><kbd>K</kbd></dt><dd>Link</dd>
+          <dt><kbd>Ctrl</kbd><kbd>F</kbd></dt><dd>Find &amp; replace</dd>
+          <dt><kbd>Ctrl</kbd><kbd>Alt</kbd><kbd>1–3</kbd></dt><dd>Heading</dd>
+          <dt><kbd>Ctrl</kbd><kbd>Shift</kbd><kbd>7–9</kbd></dt><dd>Lists</dd>
+          <dt><kbd>Ctrl</kbd><kbd>\</kbd></dt><dd>Clear formatting</dd>
+        </dl>
+        <p class="muted small">Select text and press <b>+</b> in the bubble to save it as your own shortcut.</p>
+      </details>
     </aside>
 
     <section class="main">
@@ -52,15 +81,35 @@ import Base from '../layouts/Base.astro'
 
   <style>
     .pg { display: grid; grid-template-columns: 280px 1fr; gap: 28px; padding: 28px 20px; align-items: start; }
-    .side { position: sticky; top: 80px; display: grid; gap: 8px; font-size: 14px; }
-    .side h1 { font-size: 24px; }
-    .side h2 { font-size: 12px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin-top: 18px; }
-    .side label { display: flex; align-items: center; gap: 8px; justify-content: space-between; }
-    .side input[type=text], .side input[type=password], .side input[type=url], .side select { flex: 1; min-width: 0; font: inherit; font-size: 13px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
-    .side .btn { justify-content: center; padding: 8px 12px; }
+    .side { position: sticky; top: 80px; max-height: calc(100vh - 96px); overflow-y: auto; display: grid; align-content: start; gap: 12px; font-size: 14px; padding: 2px 6px 16px 2px; scrollbar-width: thin; }
+    .side-head h1 { font-size: 24px; margin: 0 0 2px; }
+    .card { border: 1px solid var(--line); border-radius: 14px; background: var(--card); padding: 14px; display: grid; gap: 10px; }
+    .card h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); margin: 0; }
+    details.card { gap: 0; }
+    details.card[open] { gap: 10px; }
+    details.card summary { cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; }
+    details.card summary::-webkit-details-marker { display: none; }
+    details.card summary::after { content: "▾"; color: var(--muted); font-size: 12px; transition: transform .2s; }
+    details.card[open] summary::after { transform: rotate(180deg); }
+    .field { display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+    .field[hidden] { display: none; }
+    .field input, .field select { font: inherit; font-size: 13px; color: var(--fg); padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); min-width: 0; }
+    .toggle { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; line-height: 1.35; }
+    .toggle.sub { margin-left: 40px; font-size: 13px; color: var(--muted); }
+    .toggle input { appearance: none; flex: none; width: 30px; height: 18px; margin: 0; border-radius: 999px; background: var(--line); position: relative; cursor: pointer; transition: background .15s; }
+    .toggle input::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; box-shadow: 0 1px 2px rgba(0,0,0,.25); transition: transform .15s; }
+    .toggle input:checked { background: var(--accent); }
+    .toggle input:checked::after { transform: translateX(12px); }
+    .toggle input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .toggle small { display: block; font-size: 12px; color: var(--muted); }
+    .toggle small:empty { display: none; }
+    .row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .side .btn { justify-content: center; padding: 7px 12px; font-size: 13px; }
     .muted { color: var(--muted); margin: 0; }
     .small { font-size: 12px; }
-    .keys { list-style: none; padding: 0; margin: 0; display: grid; gap: 4px; font-size: 13px; color: var(--muted); }
+    .keys { display: grid; grid-template-columns: auto 1fr; gap: 6px 10px; margin: 0; font-size: 12.5px; align-items: center; }
+    .keys dt { display: flex; gap: 3px; flex-wrap: wrap; }
+    .keys dd { margin: 0; color: var(--muted); }
     kbd { font-size: 11px; padding: 1px 5px; border: 1px solid var(--line); border-bottom-width: 2px; border-radius: 4px; background: var(--card); color: var(--fg); }
     .main { display: grid; gap: 20px; min-width: 0; }
     .main :global(.penna) { min-height: 480px; }
@@ -72,15 +121,15 @@ import Base from '../layouts/Base.astro'
     .btn.small { padding: 5px 10px; font-size: 12px; }
     .panel { padding: 20px; min-height: 120px; max-height: 480px; overflow: auto; margin: 0; }
     pre.panel { border-radius: 0; font-size: 12px; white-space: pre-wrap; word-break: break-all; }
-    @media (max-width: 900px) { .pg { grid-template-columns: 1fr; } .side { position: static; } }
+    @media (max-width: 900px) { .pg { grid-template-columns: 1fr; } .side { position: static; max-height: none; } }
   </style>
 
   <script>
-    import { createEditor, renderToHTML, type PennaEditor } from '@abhinavakhil/penna-core'
+    import { createEditor, renderToHTML, shortcuts, fundraisingShortcuts, proofread, focusMode, versionHistory, mentions, mergeFields, comments, type PennaEditor, type PennaExtension } from '@abhinavakhil/penna-core'
     import { ai, type Provider } from '@abhinavakhil/penna-ai'
 
     const $ = <T extends HTMLElement>(s: string) => document.querySelector<T>(s)!
-    const SAMPLE = `<h1>Penna playground</h1><p>Type <code>/</code> for blocks, select text for the bubble menu, drop an image anywhere, or press <kbd>Ctrl</kbd>+<kbd>J</kbd> for AI.</p><h2>Things to try</h2><ul data-task=""><li data-checked="false"><p>Paste <code>https://youtu.be/dQw4w9WgXcQ</code> on an empty line</p></li><li data-checked="false"><p>Type <code>## </code> then some text</p></li><li data-checked="false"><p>Drag this block with the handle on the left</p></li><li data-checked="false"><p style="font-family: Lora; font-size: 18px; line-height: 1.75;">Change this paragraph's font, size, or line height from the toolbar</p></li></ul><table><tr><th><p>Feature</p></th><th><p>Status</p></th></tr><tr><td><p>Tables</p></td><td><p>✅</p></td></tr><tr><td><p>Merge cells</p></td><td><p>✅ (select two cells)</p></td></tr></table><div data-callout="🚀"><p>Switch the output tab below to see the same content as HTML, Markdown, JSON, or rendered without the editor.</p></div><pre data-language="ts"><code>const editor = createEditor('#editor')</code></pre>`
+    const SAMPLE = `<h1>Penna playground</h1><p>Type <code>/</code> for blocks, select text for the bubble menu, drop an image anywhere, or press <kbd>Ctrl</kbd>+<kbd>J</kbd> for AI.</p><h2>Things to try</h2><ul data-task=""><li data-checked="false"><p>Paste <code>https://youtu.be/dQw4w9WgXcQ</code> on an empty line</p></li><li data-checked="false"><p>Type <code>## </code> then some text</p></li><li data-checked="false"><p>Drag this block with the handle on the left</p></li><li data-checked="false"><p style="font-family: Lora; font-size: 18px; line-height: 1.75;">Change this paragraph's font, size, or line height from the toolbar</p></li></ul><table><tr><th><p>Feature</p></th><th><p>Status</p></th></tr><tr><td><p>Tables</p></td><td><p>✅</p></td></tr><tr><td><p>Merge cells</p></td><td><p>✅ (select two cells)</p></td></tr></table><p>Thanks <span data-merge="first_name" data-label="first name"></span>! Mention someone with <code>@</code>, add a field with <code>{{</code>. We definately need help in order to finish this, so select text and hit the comment button.</p><div data-callout="🚀"><p>Switch the output tab below to see the same content as HTML, Markdown, JSON, or rendered without the editor.</p></div><pre data-language="ts"><code>const editor = createEditor('#editor')</code></pre>`
 
     const aiCfg = () => ({
       provider: (localStorage.getItem('pg-ai-provider') || 'groq') as Provider,
@@ -107,6 +156,24 @@ import Base from '../layouts/Base.astro'
       mount()
     })
 
+    const PEOPLE = [{ id: 'u1', label: 'Aisha Khan', description: 'Gave £50' }, { id: 'u2', label: 'Tom Brennan', description: 'Gave £20' }, { id: 'u3', label: 'Priya Shah', description: 'Shared 3×' }]
+    let merge: ReturnType<typeof mergeFields> | null = null
+    const pickedExtensions = (): PennaExtension[] => {
+      const on = new Set([...document.querySelectorAll<HTMLInputElement>('.ext:checked')].map((i) => i.value))
+      const out: PennaExtension[] = []
+      $('#proof-score').textContent = ''
+      if (on.has('proofread')) out.push(proofread({ onChange: (s) => ($('#proof-score').textContent = `Score ${s.score} · ${s.issues.length} suggestion${s.issues.length === 1 ? '' : 's'}`) }))
+      if (on.has('focus')) out.push(focusMode())
+      if (on.has('history')) out.push(versionHistory({ key: 'playground', author: 'You' }))
+      merge = null
+      if (on.has('mentions')) {
+        merge = mergeFields({ fields: [{ key: 'first_name', label: 'first name' }, { key: 'amount', label: 'amount given' }], preview: ($('#opt-preview') as HTMLInputElement).checked ? { first_name: 'Aisha', amount: '£50' } : null })
+        out.push(mentions({ items: (q) => PEOPLE.filter((p) => p.label.toLowerCase().includes(q.toLowerCase())) }), merge)
+      }
+      if (on.has('shortcuts')) out.push(shortcuts({ items: fundraisingShortcuts }))
+      if (on.has('comments')) out.push(comments({ onAdd: (c) => console.log('[penna] new comment on', JSON.stringify(c.quote)) }))
+      return out
+    }
     let editor: PennaEditor | null = null
     let active = 'rendered'
     const render = () => {
@@ -127,7 +194,8 @@ import Base from '../layouts/Base.astro'
         readonly: ($('#opt-readonly') as HTMLInputElement).checked,
         toolbar: ($('#opt-toolbar') as HTMLInputElement).checked,
         theme: ($('#opt-theme') as HTMLSelectElement).value as any,
-        extensions: [ai({ ...aiCfg(), onError: (e) => alert(e.message) })],
+        dir: ($('#opt-dir') as HTMLSelectElement).value as any,
+        extensions: [ai({ ...aiCfg(), onError: (e) => alert(e.message) }), ...pickedExtensions()],
         onUpdate: render,
       })
       render()
@@ -136,6 +204,9 @@ import Base from '../layouts/Base.astro'
 
     $('#opt-readonly').addEventListener('change', (e) => { if (editor) editor.readonly = (e.target as HTMLInputElement).checked })
     $('#opt-toolbar').addEventListener('change', mount)
+    document.querySelectorAll('.ext').forEach((el) => el.addEventListener('change', mount))
+    $('#opt-dir').addEventListener('change', (e) => { if (editor) editor.dir = (e.target as HTMLSelectElement).value as any })
+    $('#opt-preview').addEventListener('change', (e) => merge?.setPreview((e.target as HTMLInputElement).checked ? { first_name: 'Aisha', amount: '£50' } : null))
     // keep the rendered panel on the same theme as the editor (auto = follow the site toggle)
     const syncOutTheme = () => {
       const t = ($('#opt-theme') as HTMLSelectElement).value

@@ -5,6 +5,8 @@ import { icons } from './icons'
 import { schema } from '../schema'
 import { slashKey } from './slash'
 
+const rtl = (view: EditorView) => getComputedStyle(view.dom).direction === 'rtl'
+
 /** Notion-style handle in the left gutter: drag to move a block, click "+" to insert below. */
 export function dragHandlePlugin(root: HTMLElement): Plugin {
   let handle: HTMLElement | null = null
@@ -15,7 +17,8 @@ export function dragHandlePlugin(root: HTMLElement): Plugin {
 
   const blockAt = (view: EditorView, x: number, y: number): { pos: number; dom: HTMLElement } | null => {
     // find the top-level block under the pointer (allowing a bit of leeway to the left)
-    const found = view.posAtCoords({ left: Math.max(x, view.dom.getBoundingClientRect().left + 8), top: y })
+    const box = view.dom.getBoundingClientRect()
+    const found = view.posAtCoords({ left: rtl(view) ? Math.min(x, box.right - 8) : Math.max(x, box.left + 8), top: y })
     if (!found) return null
     const $pos = view.state.doc.resolve(found.inside < 0 ? found.pos : found.inside)
     const depth = Math.min(1, $pos.depth)
@@ -66,7 +69,7 @@ export function dragHandlePlugin(root: HTMLElement): Plugin {
         const r = b.dom.getBoundingClientRect(), rr = root.getBoundingClientRect()
         handle!.style.display = ''
         handle!.style.top = `${r.top - rr.top + root.scrollTop + (b.dom.matches('h1,h2,h3') ? 6 : 2)}px`
-        handle!.style.left = `${r.left - rr.left - 52}px`
+        handle!.style.left = rtl(view) ? `${r.right - rr.left + 4}px` : `${r.left - rr.left - 52}px`
       }
       const leave = () => { hideTimer = window.setTimeout(hide, 300) }
       root.addEventListener('mousemove', move)
