@@ -225,6 +225,50 @@ createEditor('#editor', {
 })
 ```
 
+### Angular
+
+```sh
+npm i @abhinavakhil/penna-angular @abhinavakhil/penna-core
+```
+
+```ts
+import { PennaEditorComponent, providePenna } from '@abhinavakhil/penna-angular'
+
+// app-wide defaults (optional)
+bootstrapApplication(App, { providers: [providePenna({ theme: 'auto', extensions: [shortcuts()] })] })
+
+@Component({
+  imports: [PennaEditorComponent, FormsModule],
+  template: `<ngx-penna [(ngModel)]="html" placeholder="Write…" theme="dark" />`,
+})
+```
+
+Works with `ngModel`, `formControl` / `formControlName` (disabled → read-only), or `[(value)]`. Add `penna.css` to `styles` in `angular.json`. See [`packages/angular/README.md`](packages/angular/README.md).
+
+### Themes and direction
+
+`theme: 'auto' | 'light' | 'dark' | 'sepia'`. On `auto` the editor follows a `data-theme="dark"` or `.dark` ancestor, then the OS. Every color is a `--pn-*` CSS variable. `dir: 'rtl'` mirrors lists, quotes and menus for Arabic, Urdu and Hebrew.
+
+### Extensions
+
+All opt-in, all in `@abhinavakhil/penna-core`:
+
+```ts
+import { shortcuts, fundraisingShortcuts, proofread, focusMode, versionHistory, mentions, mergeFields, comments } from '@abhinavakhil/penna-core'
+
+createEditor('#editor', { extensions: [
+  shortcuts({ items: fundraisingShortcuts }),   // /budget, /impact, /milestones + Ctrl+Alt+B/I/M; select text → + saves your own
+  proofread({ onChange: (s) => console.log(s.score) }), // spelling, wordy phrases, long sentences; decorations only
+  mentions({ items: (q) => api.people(q) }),    // @Name
+  mergeFields({ fields: [{ key: 'first_name' }] }), // {{first_name}}; .setPreview({ first_name: 'Aisha' })
+  comments({ onAdd: (c) => api.thread(c) }),    // anchors only; threads live in your DB
+  versionHistory({ key: 'post-42' }),           // autosave snapshots, word diff, restore
+  focusMode(),                                  // sentence focus + typewriter scrolling
+] })
+```
+
+Shortcuts are plain Penna content (HTML or Markdown), so anything they insert stays editable. Pass your own `items`, or sync the ones people save with `onChange`.
+
 ### Render saved content without the editor
 
 ```ts
@@ -243,6 +287,7 @@ const html = renderToHTML(post.content) // same markup, same penna.css
 | [`@abhinavakhil/penna-element`](https://www.npmjs.com/package/@abhinavakhil/penna-element) | [![npm](https://img.shields.io/npm/v/@abhinavakhil/penna-element?style=flat-square&label=)](https://www.npmjs.com/package/@abhinavakhil/penna-element) | `<penna-editor>` web component for any framework |
 | [`@abhinavakhil/penna-react`](https://www.npmjs.com/package/@abhinavakhil/penna-react) | [![npm](https://img.shields.io/npm/v/@abhinavakhil/penna-react?style=flat-square&label=)](https://www.npmjs.com/package/@abhinavakhil/penna-react) | React wrapper |
 | [`@abhinavakhil/penna-vue`](https://www.npmjs.com/package/@abhinavakhil/penna-vue) | [![npm](https://img.shields.io/npm/v/@abhinavakhil/penna-vue?style=flat-square&label=)](https://www.npmjs.com/package/@abhinavakhil/penna-vue) | Vue wrapper |
+| `@abhinavakhil/penna-angular` | new | Angular component (ngModel, reactive forms, SSR-safe) |
 | [`@abhinavakhil/penna-ai`](https://www.npmjs.com/package/@abhinavakhil/penna-ai) | [![npm](https://img.shields.io/npm/v/@abhinavakhil/penna-ai?style=flat-square&label=)](https://www.npmjs.com/package/@abhinavakhil/penna-ai) | AI extension with free provider presets |
 
 ## Develop

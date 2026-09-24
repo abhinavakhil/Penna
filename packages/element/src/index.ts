@@ -3,13 +3,13 @@ import { createEditor, type PennaEditor, type PennaOptions } from '@abhinavakhil
 /**
  * `<penna-editor>` — works in plain HTML, Angular, Svelte, Solid, Lit, anything.
  *
- *   <penna-editor placeholder="Write…" theme="dark" value="<p>Hello</p>"></penna-editor>
+ *   <penna-editor placeholder="Write…" theme="dark" dir="rtl" value="<p>Hello</p>"></penna-editor>
  *   el.addEventListener('change', e => console.log(e.detail.html))
  *   el.editor            // the PennaEditor instance
  *   el.options = {...}   // set full PennaOptions (extensions, onUpload…) before it connects
  */
 export class PennaElement extends HTMLElement {
-  static observedAttributes = ['value', 'placeholder', 'readonly', 'theme', 'format', 'toolbar', 'autosave-key']
+  static observedAttributes = ['value', 'placeholder', 'readonly', 'theme', 'dir', 'format', 'toolbar', 'autosave-key']
   editor: PennaEditor | null = null
   /** Full options object; attributes override the matching keys. */
   options: PennaOptions = {}
@@ -29,6 +29,7 @@ export class PennaElement extends HTMLElement {
       placeholder: this.getAttribute('placeholder') ?? this.options.placeholder,
       readonly: this.hasAttribute('readonly') || this.options.readonly,
       theme: (this.getAttribute('theme') as PennaOptions['theme']) ?? this.options.theme,
+      dir: (this.getAttribute('dir') as PennaOptions['dir']) ?? this.options.dir,
       toolbar: this.getAttribute('toolbar') === 'false' ? false : this.options.toolbar,
       autosave: this.getAttribute('autosave-key') ? { key: this.getAttribute('autosave-key')! } : this.options.autosave,
       onUpdate: (ed) => {
@@ -47,6 +48,7 @@ export class PennaElement extends HTMLElement {
     if (!this.editor) return
     if (name === 'readonly') this.editor.readonly = val != null
     if (name === 'theme') this.editor.theme = (val as PennaOptions['theme']) ?? 'auto'
+    if (name === 'dir') this.editor.dir = (val as PennaOptions['dir']) ?? 'ltr'
     if (name === 'value' && val != null && val !== this.value) this.value = val
   }
 

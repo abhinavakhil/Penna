@@ -1,0 +1,5 @@
+body { font-family: system-ui, sans-serif; max-width: 860px; margin: 2rem auto; padding: 0 16px; }
+section { margin-bottom: 2.5rem; }
+pre { background: #f4f4f5; padding: 12px; overflow: auto; font-size: 12px; white-space: pre-wrap; }
+.bar { display: flex; gap: 8px; align-items: center; margin-bottom: 8px; flex-wrap: wrap; }
+.err { color: #b91c1c; }

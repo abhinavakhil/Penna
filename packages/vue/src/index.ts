@@ -1,7 +1,7 @@
 import { defineComponent, h, inject, onBeforeUnmount, onMounted, provide, ref, shallowRef, watch, type InjectionKey, type PropType, type Ref, type ShallowRef } from 'vue'
-import { createEditor, renderToHTML, type PennaEditor, type PennaOptions } from '@abhinavakhil/penna-core'
+import { createEditor, renderToHTML, type PennaEditor, type PennaOptions, type PennaTheme } from '@abhinavakhil/penna-core'
 
-export type { PennaEditor, PennaOptions }
+export type { PennaEditor, PennaOptions, PennaTheme }
 export { renderToHTML }
 
 const KEY: InjectionKey<ShallowRef<PennaEditor | null>> = Symbol('penna')
@@ -17,7 +17,8 @@ export const Penna = defineComponent({
     format: { type: String as PropType<'html' | 'markdown' | 'json'>, default: 'html' },
     placeholder: String,
     readonly: Boolean,
-    theme: String as PropType<'light' | 'dark' | 'auto'>,
+    theme: String as PropType<PennaTheme>,
+    dir: String as PropType<'ltr' | 'rtl' | 'auto'>,
     options: { type: Object as PropType<PennaOptions>, default: () => ({}) },
   },
   emits: ['update:modelValue', 'change', 'ready', 'focus', 'blur'],
@@ -37,6 +38,7 @@ export const Penna = defineComponent({
         placeholder: props.placeholder ?? props.options.placeholder,
         readonly: props.readonly || props.options.readonly,
         theme: props.theme ?? props.options.theme,
+        dir: props.dir ?? props.options.dir,
         onUpdate: (e) => {
           props.options.onUpdate?.(e)
           const v = read(e)
@@ -59,7 +61,8 @@ export const Penna = defineComponent({
       editor.value.setContent(v, props.format, false)
     })
     watch(() => props.readonly, (v) => { if (editor.value) editor.value.readonly = v })
-    watch(() => props.theme, (v) => { if (editor.value && v) editor.value.theme = v })
+    watch(() => props.theme, (v) => { if (editor.value) editor.value.theme = v ?? 'auto' })
+    watch(() => props.dir, (v) => { if (editor.value) editor.value.dir = v ?? 'ltr' })
 
     expose({ editor })
     return () => h('div', { ref: host }, slots.default?.())
@@ -88,6 +91,6 @@ export function usePennaState<T>(editor: ShallowRef<PennaEditor | null>, select:
 /** Render saved content without an editor. */
 export const PennaContent = defineComponent({
   name: 'PennaContent',
-  props: { json: { type: Object as PropType<unknown>, default: undefined }, html: String, theme: String as PropType<'light' | 'dark'> },
-  setup: (props) => () => h('div', { class: 'penna-content', 'data-theme': props.theme, innerHTML: props.html ?? (props.json ? renderToHTML(props.json) : '') }),
+  props: { json: { type: Object as PropType<unknown>, default: undefined }, html: String, theme: String as PropType<Exclude<PennaTheme, 'auto'>>, dir: String as PropType<'ltr' | 'rtl' | 'auto'> },
+  setup: (props) => () => h('div', { class: 'penna-content', 'data-theme': props.theme, dir: props.dir, innerHTML: props.html ?? (props.json ? renderToHTML(props.json) : '') }),
 })

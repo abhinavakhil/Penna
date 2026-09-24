@@ -218,6 +218,29 @@ const nodes: Record<string, NodeSpec> = {
     ],
   },
 
+  mention: {
+    inline: true,
+    group: 'inline',
+    atom: true,
+    selectable: false,
+    attrs: { id: {}, label: {} },
+    leafText: (n) => `@${n.attrs.label}`,
+    parseDOM: [{ tag: 'span[data-mention]', getAttrs: (d: HTMLElement) => ({ id: d.dataset.mention, label: d.dataset.label ?? d.textContent?.replace(/^@/, '') ?? '' }) }],
+    toDOM: (n) => ['span', { class: 'pn-mention', 'data-mention': n.attrs.id, 'data-label': n.attrs.label }, `@${n.attrs.label}`],
+  },
+
+  /** Per-reader placeholder, e.g. {{first_name}}. `label` is what the writer sees. */
+  merge_field: {
+    inline: true,
+    group: 'inline',
+    atom: true,
+    selectable: false,
+    attrs: { key: {}, label: { default: null } },
+    leafText: (n) => `{{${n.attrs.key}}}`,
+    parseDOM: [{ tag: 'span[data-merge]', getAttrs: (d: HTMLElement) => ({ key: d.dataset.merge, label: d.dataset.label || null }) }],
+    toDOM: (n) => ['span', { class: 'pn-merge', 'data-merge': n.attrs.key, 'data-label': n.attrs.label }, ['span', { class: 'pn-merge-label' }, n.attrs.label ?? n.attrs.key]],
+  },
+
   text: { group: 'inline' },
 
   ...tableNodes({ tableGroup: 'block', cellContent: 'block+', cellAttributes: {} }),
@@ -268,6 +291,14 @@ const marks: Record<string, MarkSpec> = {
     attrs: { color: { default: null } },
     parseDOM: [{ tag: 'mark', getAttrs: (d: HTMLElement) => ({ color: d.style.backgroundColor || null }) }],
     toDOM: (m) => ['mark', m.attrs.color ? { style: `background-color:${m.attrs.color}` } : {}, 0],
+  },
+  /** Anchors a comment thread. Threads live in your app; the doc only stores the id. */
+  comment: {
+    attrs: { id: {} },
+    inclusive: false,
+    excludes: '',
+    parseDOM: [{ tag: 'span[data-comment]', getAttrs: (d: HTMLElement) => ({ id: d.dataset.comment }) }],
+    toDOM: (m) => ['span', { class: 'pn-comment', 'data-comment': m.attrs.id }, 0],
   },
   color: {
     attrs: { color: {} },

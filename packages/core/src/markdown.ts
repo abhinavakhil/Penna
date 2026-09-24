@@ -67,7 +67,17 @@ md.core.ruler.after('inline', 'penna_block_images', (state) => {
   return true
 })
 
+// {{first_name}} → merge field
+md.inline.ruler.before('emphasis', 'penna_merge', (state, silent) => {
+  const m = /^\{\{\s*([\w.-]+)\s*\}\}/.exec(state.src.slice(state.pos))
+  if (!m) return false
+  if (!silent) state.push('merge_field', '', 0).meta = { key: m[1] }
+  state.pos += m[0].length
+  return true
+})
+
 export const markdownParser = new MarkdownParser(schema, md, {
+  merge_field: { node: 'merge_field', getAttrs: (t) => ({ key: t.meta.key }) },
   blockquote: { block: 'blockquote' },
   paragraph: { block: 'paragraph' },
   list_item: { block: 'list_item' },
@@ -126,6 +136,12 @@ export const markdownSerializer = new MarkdownSerializer(
       state.write(`<video src="${node.attrs.src}" controls></video>`)
       state.closeBlock(node)
     },
+    mention(state, node) {
+      state.write(`@${node.attrs.label}`)
+    },
+    merge_field(state, node) {
+      state.write(`{{${node.attrs.key}}}`)
+    },
     embed(state, node) {
       state.write(node.attrs.url)
       state.closeBlock(node)
@@ -155,6 +171,7 @@ export const markdownSerializer = new MarkdownSerializer(
     underline: { open: '<u>', close: '</u>', mixable: true },
     highlight: { open: '==', close: '==', mixable: true },
     color: { open: '', close: '', mixable: true },
+    comment: { open: '', close: '', mixable: true },
   },
 )
 

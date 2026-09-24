@@ -1,6 +1,6 @@
 import { keymap } from 'prosemirror-keymap'
 import type { EditorView } from 'prosemirror-view'
-import { h, icons, place, selectionRect, onOutside, fromMarkdown, type PennaExtension, type PennaEditor, type SlashItem, type MenuItem } from '@abhinavakhil/penna-core'
+import { h, icons, place, selectionRect, onOutside, fromMarkdown, diffHTML, type PennaExtension, type PennaEditor, type SlashItem, type MenuItem } from '@abhinavakhil/penna-core'
 import { chat, type AIConfig, type ChatMessage } from './provider'
 
 export * from './provider'
@@ -73,6 +73,7 @@ export function ai(options: AIOptions): PennaExtension {
     const root = editor.root.querySelector('.pn-scroll') as HTMLElement
     const { from, to } = view.state.selection
     const mode = action.mode ?? 'replace'
+    const original = view.state.doc.textBetween(from, to, '\n\n')
     const preview = h('div', { class: 'pn-ai-preview', 'aria-live': 'polite' })
     const error = h('div', { class: 'pn-ai-error' })
     const status = h('span', { class: 'pn-ai-sparkle', html: icons.sparkles })
@@ -118,6 +119,8 @@ export function ai(options: AIOptions): PennaExtension {
         preview.scrollTop = preview.scrollHeight
       }
       done = true
+      // show what the rewrite changes, word by word, before it touches the document
+      if (mode === 'replace' && original) preview.innerHTML = diffHTML(original, text.trim())
       actionsRow.style.display = ''
       ;(actionsRow.firstElementChild as HTMLElement).focus()
     } catch (err) {

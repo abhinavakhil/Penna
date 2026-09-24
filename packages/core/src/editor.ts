@@ -24,6 +24,7 @@ import { createToolbar, defaultToolbarItems } from './ui/toolbar'
 import { openLinkEditor, closeLinkEditor, linkHoverCard } from './ui/link'
 import { toggleFindBar } from './ui/find'
 
+export type PennaTheme = 'light' | 'dark' | 'sepia' | 'auto'
 export type PennaContent = string | Record<string, unknown> | null | undefined
 
 export interface FontFamilyOption { label: string; value: string }
@@ -62,8 +63,10 @@ export interface PennaOptions {
   placeholder?: string
   readonly?: boolean
   autofocus?: boolean
-  /** 'light' | 'dark' | 'auto' (default: auto = follows prefers-color-scheme) */
-  theme?: 'light' | 'dark' | 'auto'
+  /** 'auto' (default) follows a `data-theme` / `.dark` ancestor, then prefers-color-scheme. */
+  theme?: PennaTheme
+  /** Text direction. 'rtl' mirrors lists, quotes and menus for Arabic, Urdu, Hebrew… */
+  dir?: 'ltr' | 'rtl' | 'auto'
   /** Show the fixed toolbar (default true). */
   toolbar?: boolean | (MenuItem | '|')[]
   bubbleMenu?: boolean | MenuItem[]
@@ -110,6 +113,7 @@ export class PennaEditor {
     if (this.typography.bodyFontFamily) root.style.setProperty('--pn-font', this.typography.bodyFontFamily)
     if (this.typography.headingFontFamily) root.style.setProperty('--pn-heading-font', this.typography.headingFontFamily)
     if (opts.theme && opts.theme !== 'auto') root.dataset.theme = opts.theme
+    if (opts.dir) root.dir = opts.dir
     const scroll = h('div', { class: 'pn-scroll' })
     const mount = h('div', { class: 'pn-editor', spellcheck: 'true' })
     scroll.append(mount)
@@ -128,6 +132,8 @@ export class PennaEditor {
       // menus first so they can claim Enter / arrows before the keymaps
       ...(opts.slashMenu === false ? [] : [slashPlugin(scroll, slashItems)]),
       ...(opts.bubbleMenu === false ? [] : [bubblePlugin(scroll, bubbleItems)]),
+      // extensions next, so their popups (mentions, merge fields…) get keys before the base keymaps
+      ...exts.flatMap((e) => e.plugins?.(this) ?? []),
       pennaInputRules,
       keymap({
         'Mod-k': (_s, _d, view) => { openLinkEditor(view!, scroll); return true },
@@ -147,7 +153,6 @@ export class PennaEditor {
       findPlugin(),
       ...(opts.dragHandle === false ? [] : [dragHandlePlugin(scroll)]),
       tableMenuPlugin(scroll),
-      ...exts.flatMap((e) => e.plugins?.(this) ?? []),
     ]
 
     this.view = new EditorView(mount, {
@@ -235,8 +240,10 @@ export class PennaEditor {
     this.root.classList.toggle('pn-readonly', v)
     this.toolbar?.update()
   }
-  get theme(): 'light' | 'dark' | 'auto' { return (this.root.dataset.theme as 'light' | 'dark') ?? 'auto' }
-  set theme(t: 'light' | 'dark' | 'auto') { if (t === 'auto') delete this.root.dataset.theme; else this.root.dataset.theme = t }
+  get theme(): PennaTheme { return (this.root.dataset.theme as PennaTheme) ?? 'auto' }
+  set theme(t: PennaTheme) { if (t === 'auto') delete this.root.dataset.theme; else this.root.dataset.theme = t }
+  get dir(): 'ltr' | 'rtl' | 'auto' { return (this.root.dir as 'ltr' | 'rtl' | 'auto') || 'ltr' }
+  set dir(d: 'ltr' | 'rtl' | 'auto') { this.root.dir = d }
 
   /** Run any ProseMirror command against the live view. */
   exec(cmd: (state: EditorState, dispatch?: (tr: Transaction) => void, view?: EditorView) => boolean): boolean {

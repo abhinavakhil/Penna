@@ -12,8 +12,14 @@ export interface SlashItem {
   icon: IconName | string
   keywords?: string[]
   group?: string
+  /** Keyboard shortcut shown in the menu, ProseMirror style ('Mod-Alt-t'). Bind it yourself or via an extension. */
+  hotkey?: string
   run: (view: EditorView) => void
 }
+
+const isMac = typeof navigator !== 'undefined' && /Mac|iP(hone|ad)/.test(navigator.platform)
+/** 'Mod-Alt-t' → 'Ctrl+Alt+T' (or ⌘⌥T on Mac). */
+export const formatHotkey = (k: string) => k.split('-').map((p) => ({ Mod: isMac ? '⌘' : 'Ctrl', Alt: isMac ? '⌥' : 'Alt', Shift: isMac ? '⇧' : 'Shift', Ctrl: 'Ctrl' }[p] ?? p.toUpperCase())).join(isMac ? '' : '+')
 
 const pick = (view: EditorView, accept: string) => (cb: (files: File[]) => void) => {
   const input = h('input', { type: 'file', accept, multiple: true, style: 'display:none' })
@@ -30,18 +36,18 @@ const insertFiles = (view: EditorView, files: File[]) => {
 }
 
 export const defaultSlashItems: SlashItem[] = [
-  { id: 'text', title: 'Text', description: 'Plain paragraph', icon: 'text', keywords: ['paragraph', 'p'], group: 'Basic', run: (v) => commands.paragraph(v.state, v.dispatch) },
-  { id: 'h1', title: 'Heading 1', description: 'Big section heading', icon: 'h1', keywords: ['title', '#'], group: 'Basic', run: (v) => commands.heading(1)(v.state, v.dispatch) },
-  { id: 'h2', title: 'Heading 2', description: 'Medium section heading', icon: 'h2', keywords: ['##'], group: 'Basic', run: (v) => commands.heading(2)(v.state, v.dispatch) },
-  { id: 'h3', title: 'Heading 3', description: 'Small section heading', icon: 'h3', keywords: ['###'], group: 'Basic', run: (v) => commands.heading(3)(v.state, v.dispatch) },
-  { id: 'bullet', title: 'Bullet list', description: 'Simple bulleted list', icon: 'bulletList', keywords: ['ul', 'unordered', '-'], group: 'Basic', run: (v) => commands.bulletList(v.state, v.dispatch) },
-  { id: 'ordered', title: 'Numbered list', description: 'List with numbers', icon: 'orderedList', keywords: ['ol', '1.'], group: 'Basic', run: (v) => commands.orderedList(v.state, v.dispatch) },
-  { id: 'task', title: 'To-do list', description: 'Track tasks with checkboxes', icon: 'taskList', keywords: ['todo', 'checkbox', 'check', '[]'], group: 'Basic', run: (v) => commands.taskList(v.state, v.dispatch) },
-  { id: 'quote', title: 'Quote', description: 'Capture a quotation', icon: 'quote', keywords: ['blockquote', '>'], group: 'Basic', run: (v) => commands.blockquote(v.state, v.dispatch) },
+  { id: 'text', title: 'Text', description: 'Plain paragraph', icon: 'text', keywords: ['paragraph', 'p'], group: 'Basic', hotkey: 'Mod-Alt-0', run: (v) => commands.paragraph(v.state, v.dispatch) },
+  { id: 'h1', title: 'Heading 1', description: 'Big section heading', icon: 'h1', keywords: ['title', '#'], group: 'Basic', hotkey: 'Mod-Alt-1', run: (v) => commands.heading(1)(v.state, v.dispatch) },
+  { id: 'h2', title: 'Heading 2', description: 'Medium section heading', icon: 'h2', keywords: ['##'], group: 'Basic', hotkey: 'Mod-Alt-2', run: (v) => commands.heading(2)(v.state, v.dispatch) },
+  { id: 'h3', title: 'Heading 3', description: 'Small section heading', icon: 'h3', keywords: ['###'], group: 'Basic', hotkey: 'Mod-Alt-3', run: (v) => commands.heading(3)(v.state, v.dispatch) },
+  { id: 'bullet', title: 'Bullet list', description: 'Simple bulleted list', icon: 'bulletList', keywords: ['ul', 'unordered', '-'], group: 'Basic', hotkey: 'Mod-Shift-8', run: (v) => commands.bulletList(v.state, v.dispatch) },
+  { id: 'ordered', title: 'Numbered list', description: 'List with numbers', icon: 'orderedList', keywords: ['ol', '1.'], group: 'Basic', hotkey: 'Mod-Shift-7', run: (v) => commands.orderedList(v.state, v.dispatch) },
+  { id: 'task', title: 'To-do list', description: 'Track tasks with checkboxes', icon: 'taskList', keywords: ['todo', 'checkbox', 'check', '[]'], group: 'Basic', hotkey: 'Mod-Shift-9', run: (v) => commands.taskList(v.state, v.dispatch) },
+  { id: 'quote', title: 'Quote', description: 'Capture a quotation', icon: 'quote', keywords: ['blockquote', '>'], group: 'Basic', hotkey: 'Mod-Shift-b', run: (v) => commands.blockquote(v.state, v.dispatch) },
   { id: 'callout', title: 'Callout', description: 'Highlighted note box', icon: 'callout', keywords: ['note', 'info', 'tip', 'warning'], group: 'Basic', run: (v) => commands.callout()(v.state, v.dispatch) },
-  { id: 'code', title: 'Code block', description: 'Snippet with syntax label', icon: 'codeBlock', keywords: ['pre', '```', 'snippet'], group: 'Basic', run: (v) => commands.codeBlock()(v.state, v.dispatch) },
+  { id: 'code', title: 'Code block', description: 'Snippet with syntax label', icon: 'codeBlock', keywords: ['pre', '```', 'snippet'], group: 'Basic', hotkey: 'Mod-Alt-c', run: (v) => commands.codeBlock()(v.state, v.dispatch) },
   { id: 'hr', title: 'Divider', description: 'Horizontal rule', icon: 'hr', keywords: ['rule', 'line', '---', 'separator'], group: 'Basic', run: (v) => commands.horizontalRule(v.state, v.dispatch) },
-  { id: 'table', title: 'Table', description: '3×3 table with header', icon: 'table', keywords: ['grid', 'rows', 'columns'], group: 'Basic', run: (v) => commands.table()(v.state, v.dispatch) },
+  { id: 'table', title: 'Table', description: '3×3 table with header', icon: 'table', keywords: ['grid', 'rows', 'columns'], group: 'Basic', hotkey: 'Mod-Alt-t', run: (v) => commands.table()(v.state, v.dispatch) },
   { id: 'image', title: 'Image', description: 'Upload or paste an image', icon: 'image', keywords: ['picture', 'photo', 'img', 'upload'], group: 'Media', run: (v) => pick(v, 'image/*')((files) => insertFiles(v, files)) },
   { id: 'image-url', title: 'Image from URL', description: 'Embed an image by link', icon: 'image', keywords: ['picture', 'link'], group: 'Media', run: async (v) => { const src = await prompt('Image URL'); if (src) commands.image(src)(v.state, v.dispatch); v.focus() } },
   { id: 'video', title: 'Video', description: 'Upload a video file', icon: 'video', keywords: ['mp4', 'movie', 'upload'], group: 'Media', run: (v) => pick(v, 'video/*')((files) => insertFiles(v, files)) },
@@ -87,7 +93,8 @@ export function slashPlugin(root: HTMLElement, items: () => SlashItem[]): Plugin
       const el = h('button', {
         type: 'button', class: 'pn-menu-item' + (i === selected ? ' pn-selected' : ''), role: 'option', 'aria-selected': i === selected ? 'true' : 'false',
         onmousedown: (e: Event) => e.preventDefault(), onclick: () => runItem(view, it), onmousemove: () => { if (selected !== i) { selected = i; render(view) } },
-      }, h('span', { class: 'pn-menu-icon', html: icon }), h('span', { class: 'pn-menu-text' }, h('span', { class: 'pn-menu-title' }, it.title), it.description ? h('span', { class: 'pn-menu-desc' }, it.description) : null))
+      }, h('span', { class: 'pn-menu-icon', html: icon }), h('span', { class: 'pn-menu-text' }, h('span', { class: 'pn-menu-title' }, it.title), it.description ? h('span', { class: 'pn-menu-desc' }, it.description) : null),
+        it.hotkey ? h('kbd', { class: 'pn-menu-kbd' }, formatHotkey(it.hotkey)) : null)
       menu!.append(el)
     })
     menu.querySelector('.pn-selected')?.scrollIntoView({ block: 'nearest' })
