@@ -1,22 +1,23 @@
 ---
 import Base from '../layouts/Base.astro'
-import { icons } from '@abhinavakhil/penna-core'
+import Icon from '../components/Icon.astro'
+import { siReact, siVuedotjs, siAngular, siSvelte, siSolid, siHtml5, siAstro, siNextdotjs, siNuxt } from 'simple-icons'
 
 const features = [
-  ['sparkles', 'Bubble menu', 'Select text and the formatting you need appears right there. Bold, links, highlight, AI, and <b>Turn into</b> any block type.'],
-  ['plus', 'Shortcuts', 'Type <code>/budget</code> or <code>/impact</code>, or hit a hotkey, to drop in ready-made blocks. Select anything and press <kbd>+</kbd> to save your own.'],
-  ['check', 'Proofreader', 'Typos, wordy phrases and hard-to-read sentences get underlined as you write. One click to fix, and a live score. Nothing changes unless you accept.'],
-  ['history', 'Version history', 'Quiet autosaves, named versions, a word-by-word diff against now, and one-click restore. Pin comments to the exact words, too.'],
+  ['cursor-text', 'Bubble menu', 'Select text and the formatting you need appears right there. Bold, links, highlight, AI, and <b>Turn into</b> any block type.'],
+  ['lightning', 'Shortcuts', 'Type <code>/budget</code> or <code>/impact</code>, or hit a hotkey, to drop in ready-made blocks. Select anything and press <kbd>+</kbd> to save your own.'],
+  ['seal-check', 'Proofreader', 'Typos, wordy phrases and hard-to-read sentences get underlined as you write. One click to fix, and a live score. Nothing changes unless you accept.'],
+  ['clock-counter-clockwise', 'Version history', 'Quiet autosaves, named versions, a word-by-word diff against now, and one-click restore. Pin comments to the exact words, too.'],
   ['at', 'Mentions & merge fields', 'Type <kbd>@</kbd> to mention someone from your API, or <code>{{first_name}}</code> for per-reader fields you can preview with real values.'],
-  ['grip', 'Drag handles', 'Grab any block and move it. Click <kbd>+</kbd> to insert below. Notion-smooth, zero config.'],
+  ['hand-grabbing', 'Drag handles', 'Grab any block and move it. Click <kbd>+</kbd> to insert below. Notion-smooth, zero config.'],
   ['image', 'Images & video', 'Drop, paste or upload. Resize by dragging, align, alt text. Inline by default, or bring your own storage.'],
-  ['video', 'Embeds', 'Paste a YouTube, Vimeo, Loom, Figma or CodePen link and it just becomes the thing.'],
+  ['play-circle', 'Embeds', 'Paste a YouTube, Vimeo, Loom, Figma or CodePen link and it just becomes the thing.'],
   ['table', 'Real tables', 'Add rows and columns, merge cells, header rows, drag to resize columns. Not an afterthought.'],
-  ['text', 'Markdown in & out', 'Type <code>**bold**</code>, <code># heading</code>, <code>- [ ] task</code>. Import and export lossless Markdown, HTML or JSON.'],
-  ['search', 'Find & replace', 'With match counts, case toggle and replace-all. <kbd>Ctrl</kbd>+<kbd>F</kbd> like you\'d expect.'],
-  ['taskList', 'Task lists', 'Real checkboxes that toggle, serialize to <code>- [x]</code> Markdown and render outside the editor.'],
-  ['color', 'Light, dark, sepia & RTL', 'Follows your app\'s theme or the system. Right-to-left for Urdu and Arabic, a focus mode that dims all but the current sentence, and every color is a CSS variable.'],
-  ['copy', 'Render anywhere', '<code>renderToHTML(json)</code> needs no DOM. Show saved content on the server, in an email, in a PDF pipeline.'],
+  ['markdown-logo', 'Markdown in & out', 'Type <code>**bold**</code>, <code># heading</code>, <code>- [ ] task</code>. Import and export lossless Markdown, HTML or JSON.'],
+  ['magnifying-glass', 'Find & replace', 'With match counts, case toggle and replace-all. <kbd>Ctrl</kbd>+<kbd>F</kbd> like you\'d expect.'],
+  ['list-checks', 'Task lists', 'Real checkboxes that toggle, serialize to <code>- [x]</code> Markdown and render outside the editor.'],
+  ['circle-half', 'Light, dark, sepia & RTL', 'Follows your app\'s theme or the system. Right-to-left for Urdu and Arabic, a focus mode that dims all but the current sentence, and every color is a CSS variable.'],
+  ['browsers', 'Render anywhere', '<code>renderToHTML(json)</code> needs no DOM. Show saved content on the server, in an email, in a PDF pipeline.'],
 ]
 
 const compare: [string, string, string, string, string][] = [
@@ -103,24 +104,24 @@ const renderSnippet = `<span class="c">// server, edge, worker — no DOM requir
 <span class="k">return</span> <span class="s">\`&lt;article class="penna-content"&gt;\${html}&lt;/article&gt;\`</span>`
 
 const slashCount = 16
-const tour = [['slash', 'Slash commands'], ['shortcuts', 'Shortcuts'], ['bubble', 'Bubble menu'], ['proofread', 'Proofreader'], ['tables', 'Tables'], ['tasks', 'Task lists'], ['markdown', 'Markdown'], ['ai', 'Ask AI']]
-const stack = ['React', 'Vue', 'Angular', 'Svelte', 'Solid', 'Plain HTML', 'Astro', 'Next.js', 'Nuxt']
+const tour = [['slash', 'Slash commands', 'command'], ['shortcuts', 'Shortcuts', 'lightning'], ['bubble', 'Bubble menu', 'cursor-text'], ['proofread', 'Proofreader', 'seal-check'], ['tables', 'Tables', 'table'], ['tasks', 'Task lists', 'list-checks'], ['markdown', 'Markdown', 'markdown-logo'], ['ai', 'Ask AI', 'sparkle']]
+const stack = [['React', siReact], ['Vue', siVuedotjs], ['Angular', siAngular], ['Svelte', siSvelte], ['Solid', siSolid], ['Plain HTML', siHtml5], ['Astro', siAstro], ['Next.js', siNextdotjs], ['Nuxt', siNuxt]] as const
 const problems = [
-  ['Framework lock-in', 'Most editors are React-only or ship a jQuery-era API. Penna is a plain element with thin React, Vue and Angular wrappers, so one editor serves <b>every</b> app you own.', 'Portability'],
-  ['The plugin hunt', 'Tables, images, embeds, find & replace, task lists: usually five plugins from five authors. Here they are one import, tested together, styled together.', 'Batteries'],
-  ['AI behind a paywall', 'Built-in AI elsewhere means one vendor and a bill. Penna ships free Groq, Gemini and OpenRouter presets, plus Ollama for fully local.', 'Free AI'],
+  ['Framework lock-in', 'Most editors are React-only or ship a jQuery-era API. Penna is a plain element with thin React, Vue and Angular wrappers, so one editor serves <b>every</b> app you own.', 'Portability', 'plugs'],
+  ['The plugin hunt', 'Tables, images, embeds, find & replace, task lists: usually five plugins from five authors. Here they are one import, tested together, styled together.', 'Batteries', 'puzzle-piece'],
+  ['AI behind a paywall', 'Built-in AI elsewhere means one vendor and a bill. Penna ships free Groq, Gemini and OpenRouter presets, plus Ollama for fully local.', 'Free AI', 'coins'],
 ]
-const aiCards: [string, string, string[] | null][] = [
-  ['Free providers built in', 'Presets for every free tier, plus Ollama for fully local. Any OpenAI-compatible endpoint is one line.', ['Groq', 'Gemini', 'OpenRouter', 'Together', 'Ollama', 'OpenAI', 'Mistral']],
-  ['Every writing action', 'Continue, improve, fix grammar, shorten, expand, simplify, summarize, translate, change tone, or type any instruction.', null],
-  ['Preview before insert', 'Responses stream into a preview, and rewrites show a word-by-word diff. Accept, retry, or discard. Nothing touches the document until you say so.', null],
-  ['Your key stays yours', 'Requests go straight from the browser to the provider you chose. Nothing is sent until you trigger an action.', null],
+const aiCards: [string, string, string[] | null, string][] = [
+  ['Free providers built in', 'Presets for every free tier, plus Ollama for fully local. Any OpenAI-compatible endpoint is one line.', ['Groq', 'Gemini', 'OpenRouter', 'Together', 'Ollama', 'OpenAI', 'Mistral'], 'gift'],
+  ['Every writing action', 'Continue, improve, fix grammar, shorten, expand, simplify, summarize, translate, change tone, or type any instruction.', null, 'magic-wand'],
+  ['Preview before insert', 'Responses stream into a preview, and rewrites show a word-by-word diff. Accept, retry, or discard. Nothing touches the document until you say so.', null, 'eye'],
+  ['Your key stays yours', 'Requests go straight from the browser to the provider you chose. Nothing is sent until you trigger an action.', null, 'lock-key'],
 ]
 const stats = [
-  ['6', 'Frameworks', 'React, Vue, Angular, Svelte, Solid and plain HTML, from one package.'],
-  ['16', 'Slash blocks', 'Headings, lists, tables, media, callouts, code, embeds and AI.'],
-  ['5', 'Free AI presets', 'Groq, Gemini, OpenRouter, Together and Ollama, no card required.'],
-  ['0', 'Telemetry', 'MIT licensed. No tracking, no phone-home, no license key.'],
+  ['6', 'Frameworks', 'browsers', 'React, Vue, Angular, Svelte, Solid and plain HTML, from one package.'],
+  ['16', 'Slash blocks', 'squares-four', 'Headings, lists, tables, media, callouts, code, embeds and AI.'],
+  ['5', 'Free AI presets', 'sparkle', 'Groq, Gemini, OpenRouter, Together and Ollama, no card required.'],
+  ['0', 'Telemetry', 'shield-check', 'MIT licensed. No tracking, no phone-home, no license key.'],
 ]
 ---
 <Base>
@@ -129,14 +130,14 @@ const stats = [
       <a class="pill-tag rise" style="--i:0" href="/playground">NEW · Shortcuts, proofreader &amp; Angular <span aria-hidden="true">›</span></a>
       <h1 class="rise" style="--i:1"><span class="pri">The rich text editor<br />people actually enjoy.</span><span class="sec">Notion-feel editing. Smart shortcuts. Free AI.</span></h1>
       <div class="cta-row rise" style="--i:2">
-        <a class="btn-hero" href="/playground">Try it. It's free.</a>
+        <a class="btn-hero" href="/playground">Try it. It's free.<Icon name="arrow-right" /></a>
         <span class="micro">MIT licensed.<br />No sign-up. No credit card.</span>
       </div>
     </div>
     <div class="tabs-wrap rise" style="--i:3">
       <div class="tabs-inner demo">
         <div class="demo-nav" role="tablist" aria-label="Feature tour">
-          {tour.map(([id, label], i) => <button role="tab" data-tour={id} aria-selected={i === 0 ? 'true' : 'false'}><span class="ic" aria-hidden="true"></span>{label}</button>)}
+          {tour.map(([id, label, icon], i) => <button role="tab" data-tour={id} aria-selected={i === 0 ? 'true' : 'false'}><Icon name={icon} />{label}</button>)}
         </div>
         <div class="preview">
           <div class="demo-frame">
@@ -150,16 +151,16 @@ const stats = [
 
   <section class="strip" aria-label="Works with every framework">
     <p class="eyebrow-muted">Drops into any stack</p>
-    <div class="marquee"><div class="track">{[...stack, ...stack, ...stack, ...stack].map((s) => <span>{s}</span>)}</div></div>
+    <div class="marquee"><div class="track">{[...stack, ...stack, ...stack, ...stack].map(([name, si]) => <span style={`--brand:${{ Angular: '#DD0031', Solid: '#4F88C6', 'Next.js': 'var(--fg)' }[name as string] ?? '#' + si.hex}`}><svg viewBox="0 0 24 24" aria-hidden="true"><path d={si.path} /></svg>{name}</span>)}</div></div>
   </section>
 
   <section class="wrap problem reveal">
     <h2>Most editors make you <span class="fade">choose.</span></h2>
     <p class="sub-sm">Framework lock-in, plugin hunts, and AI behind a paywall. Penna skips all three.</p>
     <div class="three">
-      {problems.map(([title, body, tag], i) => (
+      {problems.map(([title, body, tag, icon], i) => (
         <div class="card prob reveal" style={`--i:${i}`}>
-          <span class="tag">{tag}</span>
+          <div class="prob-top"><span class="icon"><Icon name={icon} /></span><span class="tag">{tag}</span></div>
           <h3>{title}</h3>
           <p set:html={body} />
         </div>
@@ -175,7 +176,7 @@ const stats = [
         <div class="mock slash" aria-hidden="true">
           <div class="mock-line">Type <b>/</b> to insert</div>
           <div class="mock-menu">
-            {['Heading', 'Task list', 'Table', 'Image', 'Callout', 'Ask AI'].map((m, i) => <div class="mock-item" style={`--i:${i}`}><i></i>{m}</div>)}
+            {[['Heading', 'text-h'], ['Task list', 'list-checks'], ['Table', 'table'], ['Image', 'image'], ['Callout', 'info'], ['Ask AI', 'sparkle']].map(([m, ic], i) => <div class="mock-item" style={`--i:${i}`}><i><Icon name={ic} /></i>{m}<kbd>{i === 0 ? '↵' : ''}</kbd></div>)}
           </div>
         </div>
         <h3>Slash commands</h3>
@@ -183,7 +184,7 @@ const stats = [
       </div>
       <div class="card tile big reveal" style="--i:1">
         <div class="mock stream" aria-hidden="true">
-          <div class="mock-ask">✦ Continue writing</div>
+          <div class="mock-ask"><Icon name="sparkle" /> Continue writing</div>
           <p class="typed">Penna streams the answer into a preview. Accept, retry, or discard, nothing lands in your doc until you say so.</p>
         </div>
         <h3>AI that's free</h3>
@@ -191,7 +192,7 @@ const stats = [
       </div>
       {features.map(([icon, title, body], i) => (
         <div class:list={["card tile reveal", { wide: i >= features.length - 2 }]} style={`--i:${i + 2}`}>
-          <div class="icon" set:html={icons[icon as keyof typeof icons]} />
+          <div class="icon"><Icon name={icon} /></div>
           <h3>{title}</h3>
           <p set:html={body} />
         </div>
@@ -215,8 +216,9 @@ const stats = [
         <h2>Free AI out of the box.<br /><span class="fade-light">Paid models if you want them.</span></h2>
       </div>
       <div class="dark-grid">
-        {aiCards.map(([title, body, chips], i) => (
+        {aiCards.map(([title, body, chips, icon], i) => (
           <div class="dcard reveal" style={`--i:${i}`}>
+            <span class="dicon"><Icon name={icon} /></span>
             <h3>{title}</h3>
             <p>{body}</p>
             {chips && <div class="chips">{chips.map((c) => <span>{c}</span>)}</div>}
@@ -234,7 +236,7 @@ const stats = [
       <table>
         <thead><tr><th></th><th class="us">Penna</th><th>Novel</th><th>Quill</th><th>Froala</th></tr></thead>
         <tbody>
-          {compare.map(([label, ...cells]) => <tr><td>{label}</td>{cells.map((c, i) => <td class:list={{ us: i === 0, no: c.startsWith('✗') }}>{c}</td>)}</tr>)}
+          {compare.map(([label, ...cells]) => <tr><td>{label}</td>{cells.map((c, i) => <td class:list={{ us: i === 0, no: c.startsWith('✗') }}>{c.startsWith('✓') ? <><Icon name="check-circle" class="yes" />{c.slice(1)}</> : c.startsWith('✗') ? <><Icon name="x-circle" class="nope" />{c.slice(1)}</> : c}</td>)}</tr>)}
         </tbody>
       </table>
     </div>
@@ -248,7 +250,7 @@ const stats = [
         <span class="eyebrow">Show it anywhere</span>
         <h2>Edit here. Display there. <span class="fade">Same pixels.</span></h2>
         <p class="muted">Store JSON. Render it in the editor, in read-only mode, on the server, or in an email, and it looks identical, because it's literally the same serializer. No display component to keep in sync.</p>
-        <a class="btn" href="/docs#rendering">Rendering docs →</a>
+        <a class="btn" href="/docs#rendering">Rendering docs <Icon name="arrow-right" /></a>
       </div>
     </div>
   </section>
@@ -257,9 +259,9 @@ const stats = [
     <h2>Everything you need. <span class="fade">Nothing you don't.</span></h2>
     <p class="sub-sm">One package, one CSS file, every framework. Numbers from the codebase, not a slide deck.</p>
     <div class="stat-grid">
-      {stats.map(([n, label, body], i) => (
+      {stats.map(([n, label, icon, body], i) => (
         <div class="stat reveal" style={`--i:${i}`}>
-          <span class="label">{label}</span>
+          <span class="label"><Icon name={icon} />{label}</span>
           <b class="num" data-count={n}>{n}</b>
           <p>{body}</p>
         </div>
@@ -269,7 +271,7 @@ const stats = [
 
   <section class="wrap final reveal">
     <h2>Build the writing experience <br />your users <span class="grad-final">deserve.</span></h2>
-    <div class="cta"><a class="btn primary lg" href="/playground">Open the playground</a><a class="btn lg" href="/docs">Read the docs</a><code class="pill" id="copy" title="Click to copy">npm i @abhinavakhil/penna-core</code></div>
+    <div class="cta"><a class="btn primary lg" href="/playground"><Icon name="pen-nib" />Open the playground</a><a class="btn lg" href="/docs"><Icon name="book-open-text" />Read the docs</a><button class="pill" title="Click to copy"><Icon name="terminal-window" /><code id="copy">npm i @abhinavakhil/penna-core</code></button></div>
   </section>
 
   <style>
@@ -293,6 +295,9 @@ const stats = [
     .hero h1 .sec { display: block; margin-top: 6px; font-size: clamp(24px, 3.4vw, 40px); line-height: 1.1; color: var(--muted); }
     .cta-row { display: flex; align-items: center; gap: 12px; margin-top: 12px; }
     .btn-hero { display: inline-flex; align-items: center; white-space: nowrap; height: 52px; padding: 0 20px; border-radius: 14px; background: var(--fg); color: var(--bg); font-weight: 700; font-size: 16px; letter-spacing: -.01em; transition: transform .15s, opacity .15s; }
+    .btn-hero { gap: 10px; }
+    .btn-hero :global(.ph) { font-size: 18px; transition: transform .2s; }
+    .btn-hero:hover :global(.ph) { transform: translateX(3px); }
     .btn-hero:hover { transform: translateY(-1px); opacity: .92; }
     .micro { font-size: 12px; line-height: 18px; color: var(--muted); }
 
@@ -303,14 +308,11 @@ const stats = [
     .demo-nav { flex: none; width: 200px; display: flex; flex-direction: column; gap: 2px; padding: 12px 8px; }
     .demo-nav button { display: flex; align-items: center; gap: 10px; height: 30px; padding: 5px 12px 5px 10px; border: 0; background: none; color: var(--muted); font: inherit; font-size: 14px; font-weight: 600; letter-spacing: -.01em; text-align: left; border-radius: 8px; cursor: pointer; transition: color .2s, background .2s; position: relative; }
     .demo-nav button:hover { color: var(--fg); background: var(--code); }
-    .demo-nav button[aria-selected="true"] { color: #0091ff; }
-    .demo-nav .ic { width: 16px; height: 16px; flex: none; border-radius: 50%; border: 1.5px solid currentColor; position: relative; }
-    .demo-nav .ic::before, .demo-nav .ic::after { content: ""; position: absolute; background: currentColor; border-radius: 1px; }
-    .demo-nav .ic::before { width: 8px; height: 1.5px; left: 3px; top: 6.25px; }
-    .demo-nav .ic::after { width: 1.5px; height: 8px; left: 6.25px; top: 3px; }
-    .demo-nav button[aria-selected="true"] .ic { background: #0091ff; border-color: #0091ff; }
-    .demo-nav button[aria-selected="true"] .ic::before { width: 3px; height: 1.5px; left: 3.5px; top: 8px; transform: rotate(45deg); background: #fff; }
-    .demo-nav button[aria-selected="true"] .ic::after { width: 1.5px; height: 6px; left: 8px; top: 4.5px; transform: rotate(45deg); background: #fff; }
+    .demo-nav button { height: 36px; }
+    .demo-nav button[aria-selected="true"] { color: var(--fg); background: var(--card); box-shadow: 0 0 0 1px var(--line), 0 2px 6px -2px rgba(0,0,0,.08); }
+    .demo-nav :global(.ph) { font-size: 18px; color: var(--muted); transition: color .2s; }
+    .demo-nav button:hover :global(.ph) { color: var(--fg); }
+    .demo-nav button[aria-selected="true"] :global(.ph) { color: var(--accent); }
     .preview { flex: 1; min-width: 0; }
     .demo-frame { border: 1px solid var(--line); border-radius: 12px; background: var(--card); box-shadow: 0 1px 2px rgba(0,0,0,.04), 0 12px 40px -12px rgba(0,0,0,.12); overflow: hidden; }
     .demo-hint { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--muted); padding: 10px 16px; border-bottom: 1px solid var(--line); background: var(--code); }
@@ -325,7 +327,11 @@ const stats = [
     .eyebrow-muted { font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); margin: 0 0 14px; }
     .marquee { overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); mask-image: linear-gradient(90deg, transparent, #000 15%, #000 85%, transparent); }
     .marquee .track { display: flex; width: max-content; animation: marquee 40s linear infinite; }
-    .marquee span { font-family: "Plus Jakarta Sans", Inter, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--muted); opacity: .7; white-space: nowrap; padding-right: 56px; }
+    .marquee span { display: inline-flex; align-items: center; gap: 10px; transition: color .2s, opacity .2s; font-family: "Plus Jakarta Sans", Inter, sans-serif; font-weight: 700; font-size: 22px; letter-spacing: -.02em; color: var(--muted); opacity: .7; white-space: nowrap; padding-right: 56px; }
+    .marquee svg { width: 26px; height: 26px; fill: currentColor; transition: fill .2s; }
+    .marquee span:hover { color: var(--fg); opacity: 1; }
+    .marquee span:hover svg { fill: var(--brand); }
+    .marquee:hover .track { animation-play-state: paused; }
     @keyframes marquee { to { transform: translateX(-50%); } }
 
     /* ---- shared section bits ---- */
@@ -334,14 +340,16 @@ const stats = [
     .fade { background: linear-gradient(90deg, var(--fg), var(--muted)); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .sub-sm { color: var(--muted); font-size: 17px; max-width: 620px; margin: 0 0 36px; }
     .problem, .features, .install, .compare, .stats { text-align: center; }
-    .problem .sub-sm, .features .sub-sm, .install .sub-sm { margin-inline: auto; }
+    .problem .sub-sm, .features .sub-sm, .install .sub-sm, .compare .sub-sm, .stats .sub-sm { margin-inline: auto; }
     .install .tabs { justify-content: center; }
     .install pre.code { text-align: left; max-width: 760px; margin: 0 auto; }
     .muted { color: var(--muted); }
 
     /* ---- problem ---- */
     .three { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; text-align: left; }
-    .prob .tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); padding: 4px 9px; border-radius: 6px; margin-bottom: 16px; }
+    .prob-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+    .prob-top .icon { margin: 0; }
+    .prob .tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); padding: 4px 9px; border-radius: 6px; }
     .prob h3 { font-size: 20px; margin-bottom: 8px; }
     .prob p { margin: 0; color: var(--muted); font-size: 15px; }
 
@@ -352,8 +360,9 @@ const stats = [
     .tile.big h3 { font-size: 20px; margin-top: 18px; }
     .tile p { margin: 0; font-size: 14px; color: var(--muted); }
     .tile code { background: var(--code); padding: 1px 5px; border-radius: 4px; font-size: 12px; }
-    .tile .icon { width: 40px; height: 40px; border-radius: 10px; display: grid; place-items: center; background: color-mix(in srgb, var(--accent) 10%, var(--card)); color: var(--accent); margin-bottom: 18px; border: 1px solid color-mix(in srgb, var(--accent) 18%, transparent); }
-    .tile .icon :global(svg) { width: 18px; height: 18px; }
+    .icon { width: 44px; height: 44px; border-radius: 12px; display: grid; place-items: center; flex: none; color: var(--accent); background: linear-gradient(145deg, color-mix(in srgb, var(--accent) 14%, var(--card)), color-mix(in srgb, var(--accent-2) 10%, var(--card))); box-shadow: inset 0 0 0 1px color-mix(in srgb, var(--accent) 20%, transparent), 0 6px 16px -8px color-mix(in srgb, var(--accent) 45%, transparent); margin-bottom: 18px; transition: transform .25s cubic-bezier(.2,.7,.2,1); }
+    .icon :global(.ph) { font-size: 26px; }
+    .card:hover .icon { transform: translateY(-2px) rotate(-4deg); }
     .tile.wide { grid-column: span 2; }
     .tile.wide p { max-width: 42ch; }
     .mock { flex: 1; border-radius: 12px; background: var(--code); border: 1px solid var(--line); padding: 16px; min-height: 180px; font-size: 13px; overflow: hidden; }
@@ -363,9 +372,11 @@ const stats = [
     .mock-item { display: flex; align-items: center; gap: 8px; padding: 6px 8px; border-radius: 6px; font-weight: 500; opacity: 0; transform: translateX(-6px); }
     .in .mock-item, .tile:hover .mock-item { animation: slide .35s ease forwards; animation-delay: calc(var(--i) * 60ms + .2s); }
     .mock-item:first-child { background: color-mix(in srgb, var(--accent) 10%, transparent); }
-    .mock-item i { width: 14px; height: 14px; border-radius: 4px; background: linear-gradient(135deg, var(--accent), var(--accent-2)); opacity: .8; }
+    .mock-item i { width: 24px; height: 24px; border-radius: 6px; display: grid; place-items: center; background: var(--code); border: 1px solid var(--line); color: var(--accent); }
+    .mock-item i :global(.ph) { font-size: 15px; }
+    .mock-item kbd { margin-left: auto; border: 0; background: none; color: var(--muted); }
     @keyframes slide { to { opacity: 1; transform: none; } }
-    .mock-ask { display: inline-block; font-weight: 600; color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; font-size: 12px; }
+    .mock-ask { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; color: var(--accent); background: color-mix(in srgb, var(--accent) 10%, transparent); padding: 4px 10px; border-radius: 999px; margin-bottom: 12px; font-size: 12px; }
     .typed { margin: 0; color: var(--fg); line-height: 1.6; }
     .in .typed { animation: fadeup .6s ease .3s both; }
     @keyframes fadeup { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
@@ -387,6 +398,9 @@ const stats = [
     .dark-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
     .dcard { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.09); border-radius: 16px; padding: 22px; transition: border-color .2s, background .2s; }
     .dcard:hover { border-color: rgba(255,255,255,.2); background: rgba(255,255,255,.06); }
+    .dicon { width: 40px; height: 40px; border-radius: 11px; display: grid; place-items: center; margin-bottom: 16px; color: #a5b4fc; background: linear-gradient(145deg, rgba(139,140,248,.22), rgba(34,211,238,.12)); box-shadow: inset 0 0 0 1px rgba(165,180,252,.25); }
+    .dicon :global(.ph) { font-size: 22px; }
+    .dicon :global(.ph [opacity]) { fill: #67e8f9; opacity: .35; }
     .dcard h3 { font-size: 16px; margin-bottom: 8px; color: #fff; }
     .dcard p { margin: 0; font-size: 14px; color: #9aa3b2; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 14px; }
@@ -403,6 +417,10 @@ const stats = [
     .compare th { font-weight: 600; color: var(--muted); }
     .compare .us { background: color-mix(in srgb, var(--accent) 8%, transparent); font-weight: 600; }
     .compare .no { color: var(--muted); }
+    .compare td :global(.ph) { font-size: 18px; vertical-align: -4px; margin-right: 6px; }
+    .compare td :global(.yes) { color: #16a34a; }
+    .compare td :global(.yes [opacity]) { fill: #16a34a; }
+    .compare td :global(.nope) { color: var(--muted); opacity: .7; }
     .fine { font-size: 12px; color: var(--muted); margin-top: 14px; }
 
     /* ---- render ---- */
@@ -412,7 +430,8 @@ const stats = [
     .stat-grid { display: grid; grid-template-columns: repeat(4, 1fr); text-align: left; border-top: 1px solid var(--line); }
     .stat { padding: 32px 28px 8px 0; border-right: 1px solid var(--line); margin-right: 28px; }
     .stat:last-child { border-right: 0; margin-right: 0; }
-    .stat .label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+    .stat .label { display: inline-flex; align-items: center; gap: 8px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: .12em; color: var(--muted); }
+    .stat .label :global(.ph) { font-size: 18px; color: var(--accent); }
     .stat .num { display: block; font-family: "Plus Jakarta Sans", Inter, sans-serif; font-size: clamp(56px, 6.5vw, 96px); font-weight: 700; letter-spacing: -.06em; line-height: 1; margin: 14px 0 12px; color: var(--fg); }
     .stat p { margin: 0; font-size: 15px; line-height: 1.5; color: var(--muted); max-width: 26ch; }
 
@@ -420,7 +439,9 @@ const stats = [
     .final { text-align: center; padding: 80px 24px; margin-top: 120px; border: 1px solid var(--line); border-radius: 28px; background: radial-gradient(80% 100% at 50% 0%, color-mix(in srgb, var(--accent) 10%, var(--card)), var(--card)); }
     .final .cta { display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; margin-top: 26px; }
     .btn.lg { padding: 14px 24px; font-size: 15px; border-radius: 12px; }
-    .pill { background: var(--code); border: 1px solid var(--line); padding: 12px 16px; border-radius: 12px; font-size: 13px; cursor: pointer; }
+    .pill { display: inline-flex; align-items: center; gap: 8px; background: var(--code); color: var(--fg); border: 1px solid var(--line); padding: 12px 16px; border-radius: 12px; font: inherit; font-size: 13px; cursor: pointer; }
+    .pill :global(.ph) { font-size: 18px; color: var(--accent); }
+    .btn :global(.ph) { font-size: 18px; }
     .grad-final { background: linear-gradient(90deg, var(--accent), var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
 
     @media (max-width: 960px) { .bento { grid-template-columns: repeat(2, 1fr); } .stat-grid { grid-template-columns: repeat(2, 1fr); } .stat:nth-child(2) { border-right: 0; margin-right: 0; } .three { grid-template-columns: 1fr; } }
@@ -447,6 +468,7 @@ const stats = [
       .sub-sm { font-size: 15px; margin-bottom: 24px; }
       .strip { margin-top: 32px; }
       .marquee span { font-size: 18px; padding-right: 36px; }
+      .marquee svg { width: 20px; height: 20px; }
       .tabs-wrap { height: 480px; }
       .dark { border-radius: 20px; padding: 24px 18px; }
       .dark-head { margin-bottom: 20px; }
@@ -531,6 +553,6 @@ const stats = [
       }),
     )
     const copy = document.getElementById('copy')!
-    copy.addEventListener('click', () => { navigator.clipboard.writeText('npm i @abhinavakhil/penna-core'); copy.textContent = 'copied!'; setTimeout(() => (copy.textContent = 'npm i @abhinavakhil/penna-core'), 1200) })
+    copy.parentElement!.addEventListener('click', () => { navigator.clipboard.writeText('npm i @abhinavakhil/penna-core'); copy.textContent = 'copied!'; setTimeout(() => (copy.textContent = 'npm i @abhinavakhil/penna-core'), 1200) })
   </script>
 </Base>

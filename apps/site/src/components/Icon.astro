@@ -1,0 +1,10 @@
+---
+// Phosphor duotone icon, inlined at build time. Names: https://phosphoricons.com
+import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+interface Props { name: string; class?: string }
+const { name, class: cls } = Astro.props
+const svg = readFileSync(createRequire(import.meta.url).resolve(`@phosphor-icons/core/duotone/${name}-duotone.svg`), 'utf8')
+  .replace('<svg ', `<svg class="ph${cls ? ' ' + cls : ''}" aria-hidden="true" `)
+---
+<Fragment set:html={svg} />
